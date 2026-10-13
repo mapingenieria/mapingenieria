@@ -14,28 +14,29 @@ def R(a, x0, x1, y0, y1, **kw):
 
 # ================================================================ PLANTA (lindero a la derecha)
 R(ax, 0, 2.0, -1.0, 1.0, fc="none", ec="#7f8c8d", ls="--", lw=1.4, zorder=2)                # Z1 original
-R(ax, 0, 2.0, -1.0, 0.5, fc=C["zap"], ec="#1b4f72", lw=1.8, alpha=.85, zorder=3)            # queda
-R(ax, 0, 2.9, 0.5, 2.6, fc=C["caj"], ec="#a04000", lw=2, alpha=.9, zorder=4)                # cajón
-R(ax, 0.2, 2.7, 0.7, 2.4, fc="white", ec="#a04000", lw=1.2, zorder=5)                       # pozo
-R(ax, 0, 2.0, 0.5, 1.0, fc="none", ec="#922b21", lw=2, hatch="////", zorder=6)              # demolición
+R(ax, 0, 2.0, -1.0, 0.0, fc=C["zap"], ec="#1b4f72", lw=1.8, alpha=.85, zorder=3)            # queda
+R(ax, 0, 2.9, 0.0, 2.1, fc=C["caj"], ec="#a04000", lw=2, alpha=.9, zorder=4)                # cajón
+R(ax, 0.2, 2.7, 0.2, 1.9, fc="white", ec="#a04000", lw=1.2, zorder=5)                       # pozo
+R(ax, 0, 2.0, 0.0, 1.0, fc="none", ec="#922b21", lw=2, hatch="////", zorder=6)              # demolición
 R(ax, 0.3, 4.2, -0.2, 0.2, fc=C["viga"], ec="#1d8348", lw=1.5, zorder=6)                    # viga de enlace
 R(ax, 0, 0.3, -0.5, 0.5, fc=C["col"], zorder=7)                                               # columna
 R(ax, 0.1, 3.6, 2.13, 5.0, fc="#d5d8dc", ec="#566573", lw=1.5, hatch="..", zorder=1)
-R(ax, 0.0, 2.9, 2.13, 2.6, fc="none", ec="#c0392b", lw=2.5, zorder=10)
 ax.text(2.0, 3.6, "ESCALERA\n(lectura aprox. de la planta\nde 2.º nivel)", ha="center", va="center", fontsize=8.5, color="#2c3e50", fontweight="bold")
-ax.annotate("el cajón supuesto invade\n≈0,5 m de la escalera", xy=(2.9, 2.4), xytext=(7.0, 2.7), fontsize=8.5, color="#c0392b",
-            fontweight="bold", ha="left", arrowprops=dict(arrowstyle="->", color="#c0392b"))
+ax.annotate("escalera existente: no se toca\n(holgura ≈ 0,0–0,1 m, confirmar en obra)", xy=(2.9, 2.13), xytext=(7.0, 2.9), fontsize=8.5, color="#1d8348",
+            fontweight="bold", ha="left", arrowprops=dict(arrowstyle="->", color="#1d8348"))
+R(ax, 0.22, 3.69, 0.05, 2.08, fc="none", ec="#e60000", lw=2.2, ls="--", zorder=11)
+ax.text(3.65, 0.0, "foso según tu marcado\n(≈ 3,5 x 2,0 m)", ha="left", va="bottom", fontsize=8, color="#e60000", fontweight="bold")
 ax.axvline(0, color="k", lw=3, zorder=8)
 ax.text(0, -1.78, "LINDERO", ha="center", va="center", fontsize=10, fontweight="bold")
 ax.annotate("Columna D5\n0,30 x 1,00", xy=(0.0, -0.3), xytext=(-0.45, -1.1), fontsize=8, ha="left",
             arrowprops=dict(arrowstyle="->", color=C["col"]))
 ax.text(1.3, -0.62, "① Zapata Z1 (2,0 x 2,0)\nrecortada: se conserva", ha="center", va="center",
         fontsize=8.5, color="#0b2e4a", fontweight="bold", zorder=9)
-ax.annotate("② se demuele: 0,5 m de la zapata\nque chocan con el foso", xy=(1.5, 0.75), xytext=(7.0, 1.55),
+ax.annotate("② se demuele: 1,0 m de la zapata\nque chocan con el foso", xy=(1.5, 0.5), xytext=(7.0, 1.2),
             fontsize=8.5, color="#7b241c", fontweight="bold", ha="left", arrowprops=dict(arrowstyle="->", color="#922b21"))
-ax.text(1.45, 1.55, "③ CAJÓN DEL FOSO\nlosa-zapata + muros\nhuella 2,90 x 2,10", ha="center", va="center",
-        fontsize=9, color="#7e3500", fontweight="bold", zorder=9)
-ax.text(1.45, 2.0, "pozo libre 2,50 x 1,70", ha="center", va="center", fontsize=8, color="#555", zorder=9)
+ax.annotate("③ CAJÓN DEL FOSO\nlosa-zapata + muros\nhuella exterior 2,90 x 2,10", xy=(2.5, 1.6), xytext=(7.0, 1.9),
+            fontsize=9, color="#7e3500", fontweight="bold", ha="left", arrowprops=dict(arrowstyle="->", color="#a04000"))
+ax.text(1.35, 1.55, "pozo libre\n2,50 x 1,70", ha="center", va="center", fontsize=8, color="#555", zorder=9)
 ax.annotate("④ Viga de enlace del eje 5\n0,40 x 1,00 m  →  hacia A5", xy=(3.9, -0.2), xytext=(4.5, -1.3), fontsize=9,
             color="#1d8348", fontweight="bold", ha="left", arrowprops=dict(arrowstyle="->", color="#1d8348"))
 ax.annotate("", xy=(2.0, -1.45), xytext=(0, -1.45), arrowprops=dict(arrowstyle="<->"))
@@ -72,11 +73,11 @@ bx.set_xlim(7.4, -1.2); bx.set_ylim(-3.4, 1.3)
 bx.set_xlabel("distancia desde el lindero (m)", fontsize=8); bx.set_ylabel("cota (m)", fontsize=8)
 bx.set_title("CORTE por el foso (perpendicular al lindero)", fontsize=11, fontweight="bold")
 
-fig.suptitle("SOLUCIÓN PROPUESTA PARA D5 (versión a corregir: el cajón supuesto invade la escalera)",
+fig.suptitle("SOLUCIÓN PROPUESTA PARA D5:  zapata recortada + cajón del foso + viga de enlace (escalera existente respetada)",
              fontsize=14, fontweight="bold", y=0.985)
 fig.text(0.5, 0.012,
-         "Qué logra: libera el foso (1,50 m), no excava en la grava y mantiene la base en la cota original (−2,00).   "
+         "Qué logra: libera el foso (1,50 m), respeta la escalera construida, no excava en la grava y mantiene la base en −2,00.   "
          "Requiere: apuntalamiento y transferencia de carga antes de demoler.\n"
-         "Preliminar: falta confirmar cargas reales de D3/A3, restricción al giro y criterio del geotecnista.",
+         "Preliminar: falta confirmar la posición construida del hueco, cargas reales de D3/A3, restricción al giro y criterio del geotecnista.",
          ha="center", fontsize=8.5, style="italic")
 fig.tight_layout(rect=(0, 0.05, 1, 0.955)); fig.savefig("solucion.png", dpi=140)
