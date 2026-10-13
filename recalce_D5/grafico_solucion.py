@@ -24,8 +24,12 @@ R(ax, 0.1, 3.6, 2.13, 5.0, fc="#d5d8dc", ec="#566573", lw=1.5, hatch="..", zorde
 ax.text(2.0, 3.6, "ESCALERA\n(lectura aprox. de la planta\nde 2.º nivel)", ha="center", va="center", fontsize=8.5, color="#2c3e50", fontweight="bold")
 ax.annotate("escalera existente: no se toca\n(holgura ≈ 0,0–0,1 m, confirmar en obra)", xy=(2.9, 2.13), xytext=(7.0, 2.9), fontsize=8.5, color="#1d8348",
             fontweight="bold", ha="left", arrowprops=dict(arrowstyle="->", color="#1d8348"))
-R(ax, 0.22, 3.69, 0.05, 2.08, fc="none", ec="#e60000", lw=2.2, ls="--", zorder=11)
-ax.text(3.65, 0.0, "foso según tu marcado\n(≈ 3,5 x 2,0 m)", ha="left", va="bottom", fontsize=8, color="#e60000", fontweight="bold")
+ax.annotate("", xy=(2.7, 1.72), xytext=(0.2, 1.72), arrowprops=dict(arrowstyle="<->", color="#333"), zorder=12)
+ax.text(1.45, 1.80, "2,50 libres", ha="center", va="top", fontsize=8, fontweight="bold", zorder=12)
+ax.annotate("", xy=(2.55, 1.9), xytext=(2.55, 0.2), arrowprops=dict(arrowstyle="<->", color="#333"), zorder=12)
+ax.text(2.58, 1.05, "1,70\nlibres", ha="left", va="center", fontsize=8, fontweight="bold", zorder=12)
+ax.annotate("", xy=(3.15, 2.1), xytext=(3.15, 0.0), arrowprops=dict(arrowstyle="<->", color="#a04000"), zorder=12)
+ax.text(3.2, 0.5, "2,10 ext.\n(muros 0,20)", ha="left", va="center", fontsize=7.5, color="#a04000", zorder=12)
 ax.axvline(0, color="k", lw=3, zorder=8)
 ax.text(0, -1.78, "LINDERO", ha="center", va="center", fontsize=10, fontweight="bold")
 ax.annotate("Columna D5\n0,30 x 1,00", xy=(0.0, -0.3), xytext=(-0.45, -1.1), fontsize=8, ha="left",
@@ -36,7 +40,7 @@ ax.annotate("② se demuele: 1,0 m de la zapata\nque chocan con el foso", xy=(1.
             fontsize=8.5, color="#7b241c", fontweight="bold", ha="left", arrowprops=dict(arrowstyle="->", color="#922b21"))
 ax.annotate("③ CAJÓN DEL FOSO\nlosa-zapata + muros\nhuella exterior 2,90 x 2,10", xy=(2.5, 1.6), xytext=(7.0, 1.9),
             fontsize=9, color="#7e3500", fontweight="bold", ha="left", arrowprops=dict(arrowstyle="->", color="#a04000"))
-ax.text(1.35, 1.55, "pozo libre\n2,50 x 1,70", ha="center", va="center", fontsize=8, color="#555", zorder=9)
+ax.text(1.35, 1.55, "pozo libre", ha="center", va="center", fontsize=8, color="#555", zorder=9)
 ax.annotate("④ Viga de enlace del eje 5\n0,40 x 1,00 m  →  hacia A5", xy=(3.9, -0.2), xytext=(4.5, -1.3), fontsize=9,
             color="#1d8348", fontweight="bold", ha="left", arrowprops=dict(arrowstyle="->", color="#1d8348"))
 ax.annotate("", xy=(2.0, -1.45), xytext=(0, -1.45), arrowprops=dict(arrowstyle="<->"))
