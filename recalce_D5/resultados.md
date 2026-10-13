@@ -23,6 +23,47 @@
 - Suelo de arcilla: ks = 60 000 kN/m³ (de E = 10 000 t/m², ν = 0,35, B = 1,8 m) y q_adm = 323,65 kPa (estudio de suelos).
 - Pruebas: voladizo, torsión, zapata centrada y equilibrio de reacciones (`test_modelo.py`).
 
+## Actualización con P_D5 = 85 t (carga medida)
+
+Se toma 85 t ≈ 834 kN como carga **de servicio**. Si es mayorada, hay que reescalar. Las vecinas se cargan con el mismo reparto tributario (supuesto), así que también están cerca de 80 t. Script: `correr_85t.py`; figura: `comparacion_85t.png`.
+
+**La incógnita que domina el resultado es cuánto giro restringen las vigas y la superestructura en el nodo de D5.** Se barre con multiplicadores ×1, ×3 y ×10 sobre un resorte base de 4EI/h de la columna 0,30 m.
+
+### Resultado principal
+
+La zapata original no pasa en este modelo. Con 85 t, la presión máxima bajo D5 es:
+
+| Restricción rotacional | ×1 | ×3 | ×10 |
+|---|---|---|---|
+| Z1 original, p_máx / q_adm | 2,00 | 1,58 | 1,18 |
+
+Para llegar a q_adm hace falta una restricción de ×28. Incluso con presión uniforme (sin excentricidad) serían 257 kPa = 0,80 q_adm.
+
+**Ampliar la zapata hacia el interior no ayuda.** El ancho de contacto lo fija el equilibrio del momento (la columna está al ras del lindero), no el tamaño de la zapata. Lo que sí ayuda es **estrecharla y alargarla a lo largo del lindero**, porque baja la excentricidad y el momento que hay que equilibrar.
+
+### Alternativas con 85 t (p_máx bajo D5 / q_adm; M_exc = R·e en kN·m)
+
+| Alternativa | ×1 | ×3 | ×10 | M_exc (kN·m) |
+|---|---|---|---|---|
+| Base (Z1 1,8 × 1,8) | 2,00 | 1,58 | 1,18 | 550–660 |
+| A, zapata profunda en grava | 1,43 | 1,15 | 0,93 | ≈ 610 |
+| A2, cajón 2,1 × 2,9 | 1,46 | 1,15 | 0,84 | 480–810 |
+| B, 1,2 × 3,0 | 1,43 | 1,15 | 0,93 | ≈ 400 |
+| Corrida 0,9 × 5,0 | 1,00 | 0,83 | 0,70 | ≈ 270 |
+| Corrida 0,6 × 5,0 | 1,12 | 1,02 | 0,96 | ≈ 133 |
+| C, colgada de la viga de lindero | vecinas 3,40 | 2,83 | 2,23 | n/a |
+| T0, D5 sin zapata | vecinas 4,44 | 3,69 | 3,08 | n/a |
+
+- **A** además sube las vecinas hasta 2,24 / 1,76 / 1,33 y deja asentamientos diferenciales de 7 mm.
+- **C y T0** siguen sin ser viables: sobrecargan las vecinas y la viga de lindero.
+- **A2 depende de la restricción.** Su excentricidad es la mayor (0,90 m) y su momento crece con la restricción. Si el cajón no entrega rigidez real, rinde apenas como B.
+- **La corrida de 0,9 × 5,0 m** es la mejor en presión y en momento, pero ocupa unos 5 m de lindero (D3 y D6 quedan a unos 1 m de su borde) y no sé si libra el foso.
+
+### Qué significa
+1. **Cómo se equilibró el momento en el diseño original** pasa a ser la pregunta clave. M = R·e ≈ 550–660 kN·m por apoyo. La viga VC.S‑55×40 interpretada como 0,40 × 0,55 m tiene un φMn indicativo de ≈ 320 kN·m.
+2. **Un límite de presión mayor sí es una opción.** Con Fs = 5,27, q_ult ≈ 1 700 kPa. Una presión de borde de 2 × q_adm mantiene un factor local cercano a 2,6 (sin descontar el ancho efectivo). Eso lo debe dictaminar el geotecnista.
+3. **Hay que pedir** el cuadro de elementos (Z1, vigas) y las cargas reales de D3, D6 y A5.
+
 ## Hallazgo previo: calibración del caso base
 
 Con mi carga supuesta (6 000 kN, P_D5 ≈ 876 kN) el caso base no pasa: la presión máxima llega a 2,1 × q_adm. En este modelo, las zapatas excéntricas de lindero alcanzan q_adm con **P_D5 ≈ 406 kN (≈ 41 t)**. Con restricción rotacional total serían ≈ 107 t (33 t/m² × 3,24 m²).
@@ -76,6 +117,7 @@ q_adm de arcilla = 323,65 kPa. Para A no hay q_adm de la grava.
 ```
 cd recalce_D5
 PYTHONPATH=. python3 test_modelo.py
-python3 modelo_parrilla.py        # escribe resultados.json
-python3 generar_informe.py        # escribe comparacion.png
+PYTHONPATH=. python3 modelo_parrilla.py     # carga calibrada -> resultados.json
+PYTHONPATH=. python3 generar_informe.py     # comparacion.png
+PYTHONPATH=. python3 correr_85t.py          # P_D5 = 85 t -> resultados_85t.json, comparacion_85t.png
 ```

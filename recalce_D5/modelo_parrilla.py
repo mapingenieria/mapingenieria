@@ -32,6 +32,7 @@ GC = EC / (2 * (1 + NU_C))
 FY = 420.0                                        # MPa
 
 H_STORY = 3.0          # m, altura de entrepiso (SUPUESTO) para el resorte de la superestructura
+SUPER_MULT = 1.0       # multiplicador de la restriccion rotacional de la superestructura
 SUPER_SPRING = True    # columnas 0,30x1,00 arriba del nodo restringen el giro a (eje debil)
 KS_CLAY = 60_000.0     # kN/m3  (E=10000 t/m2, nu=0.35, B=1.8 m -> ~62 000)
 KS_GRAVEL = 25_000.0   # kN/m3  SUPUESTO: grava media-suelta, sin datos del estudio
@@ -175,7 +176,7 @@ def solve(footings, beam_over=None, loads=None, contacts=None):
         K[i0:i0 + 3, i0:i0 + 3] += kf
         geo[nm] = g
     if SUPER_SPRING:
-        ksup = 4 * EC * (COL_T**3 * 1.00 / 12) * EI_FACTOR / H_STORY
+        ksup = SUPER_MULT * 4 * EC * (COL_T**3 * 1.00 / 12) * EI_FACTOR / H_STORY
         for nm in P:
             K[nodes[nm] * 3 + 1, nodes[nm] * 3 + 1] += ksup
     u = np.linalg.solve(K, F)
