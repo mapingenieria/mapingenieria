@@ -20,6 +20,11 @@ R(ax, 0.2, 2.7, 0.7, 2.4, fc="white", ec="#a04000", lw=1.2, zorder=5)           
 R(ax, 0, 2.0, 0.5, 1.0, fc="none", ec="#922b21", lw=2, hatch="////", zorder=6)              # demolición
 R(ax, 0.3, 4.2, -0.2, 0.2, fc=C["viga"], ec="#1d8348", lw=1.5, zorder=6)                    # viga de enlace
 R(ax, 0, 0.3, -0.5, 0.5, fc=C["col"], zorder=7)                                               # columna
+R(ax, 0.1, 3.6, 2.13, 5.0, fc="#d5d8dc", ec="#566573", lw=1.5, hatch="..", zorder=1)
+R(ax, 0.0, 2.9, 2.13, 2.6, fc="none", ec="#c0392b", lw=2.5, zorder=10)
+ax.text(2.0, 3.6, "ESCALERA\n(lectura aprox. de la planta\nde 2.º nivel)", ha="center", va="center", fontsize=8.5, color="#2c3e50", fontweight="bold")
+ax.annotate("el cajón supuesto invade\n≈0,5 m de la escalera", xy=(2.9, 2.4), xytext=(7.0, 2.7), fontsize=8.5, color="#c0392b",
+            fontweight="bold", ha="left", arrowprops=dict(arrowstyle="->", color="#c0392b"))
 ax.axvline(0, color="k", lw=3, zorder=8)
 ax.text(0, -1.78, "LINDERO", ha="center", va="center", fontsize=10, fontweight="bold")
 ax.annotate("Columna D5\n0,30 x 1,00", xy=(0.0, -0.3), xytext=(-0.45, -1.1), fontsize=8, ha="left",
@@ -36,7 +41,7 @@ ax.annotate("④ Viga de enlace del eje 5\n0,40 x 1,00 m  →  hacia A5", xy=(3.
 ax.annotate("", xy=(2.0, -1.45), xytext=(0, -1.45), arrowprops=dict(arrowstyle="<->"))
 ax.text(1.0, -1.58, "2,0 m", ha="center", fontsize=8)
 ax.text(-0.15, 0.0, "eje 5", fontsize=8, va="center", ha="left")
-ax.set_xlim(7.2, -1.6); ax.set_ylim(3.0, -2.1); ax.set_aspect("equal")
+ax.set_xlim(7.2, -1.6); ax.set_ylim(5.2, -2.1); ax.set_aspect("equal")
 ax.set_xlabel("distancia desde el lindero (m, hacia el interior)", fontsize=8)
 ax.set_ylabel("a lo largo del lindero (m, sur ↓)", fontsize=8)
 ax.set_title("PLANTA (zona de D5)", fontsize=11, fontweight="bold")
@@ -67,7 +72,7 @@ bx.set_xlim(7.4, -1.2); bx.set_ylim(-3.4, 1.3)
 bx.set_xlabel("distancia desde el lindero (m)", fontsize=8); bx.set_ylabel("cota (m)", fontsize=8)
 bx.set_title("CORTE por el foso (perpendicular al lindero)", fontsize=11, fontweight="bold")
 
-fig.suptitle("SOLUCIÓN PROPUESTA PARA D5:  recortar la zapata + cajón del foso + viga de enlace peraltada",
+fig.suptitle("SOLUCIÓN PROPUESTA PARA D5 (versión a corregir: el cajón supuesto invade la escalera)",
              fontsize=14, fontweight="bold", y=0.985)
 fig.text(0.5, 0.012,
          "Qué logra: libera el foso (1,50 m), no excava en la grava y mantiene la base en la cota original (−2,00).   "
