@@ -23,6 +23,41 @@
 - Suelo de arcilla: ks = 60 000 kN/m³ (de E = 10 000 t/m², ν = 0,35, B = 1,8 m) y q_adm = 323,65 kPa (estudio de suelos).
 - Pruebas: voladizo, torsión, zapata centrada y equilibrio de reacciones (`test_modelo.py`).
 
+## Datos confirmados: y0 = 0,5 m y sótano al nivel del terreno
+
+Script: `correr_viga_enlace.py`. Con estos dos datos las cotas quedan así (m bajo el piso terminado del sótano = bajo el terreno de los sondeos):
+
+| Elemento | Cota |
+|---|---|
+| Fondo terminado del foso | −1,50 |
+| Base de la placa del foso (acabado 0,05 + placa 0,25 a 0,30) | −1,80 a −1,85 |
+| Base de la zapata original (estudio de suelos) | −2,00 |
+| **A:** zapata nueva bajo la placa (separación 0,05–0,10 + 0,50–0,60 de espesor) | **−2,35 a −2,55, o sea 0,35–0,55 m dentro de la grava** |
+| **A2:** losa-zapata del cajón (0,40–0,50 m) | −1,95 a −2,05, **en el contacto arcilla/grava** |
+
+- **A2 se queda en la arcilla si la losa-zapata tiene como máximo unos 0,45 m de espesor** (base en −2,00 o más arriba). Además hay 10 cm de concreto de saneamiento que recomienda el estudio: con 0,40 m de losa la excavación llegaría a −2,05, apenas dentro de la grava.
+- **A queda en la grava**, de la que no hay parámetros.
+
+### Resultados con y0 = 0,5 m, Z1 2 × 2 m y P_D5 = 85 t
+
+Presión máxima bajo D5 / q_adm, con la restricción de la superestructura en ×1:
+
+| VC del eje 5 | V0, Z1 original | A2, recortada + cajón | M viga eje 5 (kN·m) | φMn indicativo (ρ = 1 %) |
+|---|---|---|---|---|
+| 0,40 × 0,55 (actual) | 1,85 | 1,91 | 133 | 320 |
+| 0,40 × 0,80 | 1,62 | 1,68 | 262 | 731 |
+| 0,40 × 1,00 | 1,43 | 1,50 | 377 | 1 179 |
+| 0,40 × 1,20 | 1,28 | 1,35 | 484 | 1 734 |
+
+Con restricción ×3 los valores bajan: V0 1,47 / 1,37 / 1,27 / 1,17 y A2 1,54 / 1,44 / 1,34 / 1,24.
+
+### Lectura
+1. **A2 mantiene el desempeño de la zapata original** (+3 a 5 %) y resuelve la interferencia sin excavar en la grava. En el cajón, el parche del foso toma solo ≈ 30 % de la carga; el 70 % lo sigue tomando la parte norte de la zapata.
+2. **El problema de fondo es la excentricidad, no el foso.** Con 85 t, la zapata original ya está en 1,85 × q_adm en este modelo (restricción ×1).
+3. **Una viga de enlace más peraltada en el eje 5 baja la presión** en 23 % (0,40 × 1,00) y 31 % (0,40 × 1,20). El momento de la viga queda muy por debajo del φMn indicativo; el límite es la rigidez, no la resistencia de la viga.
+4. **Ni con 0,40 × 1,20 se llega a q_adm** con 85 t en este modelo. Que 1,3 × q_adm sea aceptable lo debe dictaminar el geotecnista: con Fs = 5,27 el factor local contra falla sigue cerca de 3.
+5. **Falta confirmar la restricción real al giro** que aporta la superestructura. Es la incógnita que más cambia estos números.
+
 ## Actualización: Z1 = 2,0 × 2,0 m y foso según la planta de segundo nivel
 
 **Esta sección reemplaza a las posteriores donde haya diferencias.** Las corridas anteriores usaron Z1 de 1,8 × 1,8 m y el foso con su lado de 1,70 m hacia el interior; ambos supuestos estaban mal. Script: `correr_foso_real.py`; esquema: `esquema_supuestos.png`.
@@ -200,4 +235,5 @@ PYTHONPATH=. python3 generar_informe.py     # comparacion.png
 PYTHONPATH=. python3 correr_85t.py          # P_D5 = 85 t -> resultados_85t.json, comparacion_85t.png
 PYTHONPATH=. python3 correr_corrida_foso.py # corrida angosta con foso adosado (supuestos antiguos) -> resultados_corrida_foso.json
 PYTHONPATH=. python3 correr_foso_real.py    # Z1 2x2 y foso segun planta de 2.o nivel -> resultados_foso_real.json
+PYTHONPATH=. python3 correr_viga_enlace.py  # y0 = 0,5 m; efecto de la altura de la VC del eje 5 -> resultados_viga_enlace.json
 ```
