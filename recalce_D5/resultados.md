@@ -23,6 +23,23 @@
 - Suelo de arcilla: ks = 60 000 kN/m³ (de E = 10 000 t/m², ν = 0,35, B = 1,8 m) y q_adm = 323,65 kPa (estudio de suelos).
 - Pruebas: voladizo, torsión, zapata centrada y equilibrio de reacciones (`test_modelo.py`).
 
+## Caso puntual: A2 + viga 0,40 × 1,00 m + restricción ×3 (P_D5 = 85 t)
+
+Script: `caso_A2_viga100_x3.py`. y0 = 0,5 m, Z1 = 2 × 2 m, sótano al nivel del terreno. Las vecinas usan mi reparto tributario (D3 y A3 ≈ 836 kN, supuesto).
+
+| Zapata | V0 (original), p_máx / q_adm | A2, p_máx / q_adm |
+|---|---|---|
+| D5 | 1,27 | 1,34 |
+| D3 | 1,44 | 1,48 |
+| A3 | 1,43 | 1,44 |
+| A5 | 1,26 | 1,27 |
+| D6 | 0,89 | 0,81 |
+
+- **D5 en A2:** el parche norte (zapata recortada) toma 71 % de la carga (643 kN) con 434 kPa = 1,34 q_adm y contacto completo. El cajón toma 29 % (260 kN) con 292 kPa = 0,90 q_adm, pero con solo 45 % de contacto (p_mín negativa): trabaja a medias.
+- **M_exc (R·e) = 676 kN·m** (V0: 764). La viga del eje 5 resiste con holgura: −305 kN·m contra un φMn indicativo de 1 179. Las vigas de lindero y la VC.S‑6 quedan casi sin esfuerzo.
+- **Asentamientos:** D5 3,0 mm (V0: 3,7 mm); los demás entre 2,2 y 3,9 mm (diferencial ≈ 1,7 mm).
+- **Quien gobierna el sistema es D3/A3 (1,44–1,48 q_adm)**, no D5. Eso depende de cargas que son supuestas: necesito las reales de D3, A3, A5 y D6.
+
 ## Datos confirmados: y0 = 0,5 m y sótano al nivel del terreno
 
 Script: `correr_viga_enlace.py`. Con estos dos datos las cotas quedan así (m bajo el piso terminado del sótano = bajo el terreno de los sondeos):
