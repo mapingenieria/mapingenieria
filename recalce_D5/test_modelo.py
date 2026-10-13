@@ -29,6 +29,18 @@ def test_zapata_centrada():
     assert abs(K[0, 1] - kv * g[2]) < 1e-6
 
 
+def test_parches_equivalen_a_zapata_continua():
+    # una zapata partida en dos parches (misma ks) debe dar lo mismo que la zapata entera
+    base = {f"{c}{a}": dict(m.Z1) for c in "AD" for a in m.YAX}
+    uno = dict(base); uno["D5"] = dict(Bx=0.9, By=4.0, yoff=0.0, ks=m.KS_CLAY)
+    dos = dict(base); dos["D5"] = [dict(Bx=0.9, By=1.0, yoff=-1.5, ks=m.KS_CLAY),
+                                   dict(Bx=0.9, By=2.0, yoff=0.0, ks=m.KS_CLAY),
+                                   dict(Bx=0.9, By=1.0, yoff=1.5, ks=m.KS_CLAY)]
+    a = m.post(m.solve_nt(uno))["footings"]["D5"]
+    b = m.post(m.solve_nt(dos))["footings"]["D5"]
+    assert abs(a["R"] - b["R"]) < 1e-6 * a["R"] and abs(a["p_max"] - b["p_max"]) < 1e-6 * a["p_max"]
+
+
 def test_equilibrio_y_variantes():
     w0 = m.W_TOTAL
     m.W_TOTAL = m.calibrate_W()                     # carga que lleva Z1 original a q_adm

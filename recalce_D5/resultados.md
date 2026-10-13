@@ -64,6 +64,51 @@ Para llegar a q_adm hace falta una restricción de ×28. Incluso con presión un
 2. **Un límite de presión mayor sí es una opción.** Con Fs = 5,27, q_ult ≈ 1 700 kPa. Una presión de borde de 2 × q_adm mantiene un factor local cercano a 2,6 (sin descontar el ancho efectivo). Eso lo debe dictaminar el geotecnista.
 3. **Hay que pedir** el cuadro de elementos (Z1, vigas) y las cargas reales de D3, D6 y A5.
 
+## Corrida angosta con el foso adosado al lindero (P_D5 = 85 t)
+
+Script: `correr_corrida_foso.py`; figura: `comparacion_corrida_foso.png`.
+
+**Geometría supuesta (a confirmar):**
+- Foso adosado al lindero D, caja libre de 1,70 × 2,50 m más muros de 0,20 m: huella de 2,10 (x) × 2,90 m (a lo largo del lindero), centrada en el eje 5.
+- Donde la corrida pasa bajo la huella del foso debe ir **más profunda que la placa del foso** (base entre −2,4 y −2,55 m bajo el piso del sótano, en la grava, ks = 25 000 kN/m³ supuesto).
+- Fuera de la huella queda al nivel original, en arcilla.
+- Por eso se modela **escalonada**: un tramo profundo de 2,90 m con ks de grava y tramos someros de arcilla a los lados.
+
+### Resultado (p_máx en los tramos de arcilla / q_adm)
+
+| Caso | ×1 | ×3 | ×10 | M_exc (kN·m) |
+|---|---|---|---|---|
+| Corrida 0,9 × 5,0 escalonada, foso centrado | 1,34 | 1,14 | 1,00 | ≈ 265 |
+| Corrida 0,9 × 4,0 escalonada | 1,76 | 1,53 | 1,38 | ≈ 260 |
+| Corrida 0,6 × 5,0 escalonada | 1,58 | 1,46 | 1,38 | ≈ 130 |
+| Corrida 0,9 × 5,0, foso desplazado +1,0 m | 1,82 | 1,63 | 1,50 | ≈ 265 |
+| Corrida 0,9 × 5,0, foso desplazado −1,0 m | 1,94 | 1,72 | 1,58 | ≈ 265 |
+| Referencia: toda en arcilla (sin foso) | 1,00 | 0,83 | 0,70 | ≈ 270 |
+| Para comparar: Base / B / A2 | 2,00 / 1,43 / 1,46 | 1,58 / 1,15 / 1,15 | 1,18 / 0,93 / 0,84 | 550–660 / 400 / 480–810 |
+
+La presión en el tramo de grava queda entre 130 y 260 kPa. **No hay q_adm de la grava**, así que no puedo decir si pasa.
+
+### Sensibilidad
+- **Rigidez de la grava (corrida 0,9 × 5,0, foso centrado).** Con ks = 15 000 la grava toma solo el 26 % de la carga y los tramos de arcilla suben a 1,51 / 1,29 / 1,15. Con ks = 25 000 toma el 37 %. Con grava tan rígida como la arcilla (ks = 60 000) se recupera la referencia sin foso: 1,00 / 0,83 / 0,70.
+- **Largo total (restricción ×1 / ×3 / ×10, ancho 0,9 m).**
+
+| Largo | ×1 | ×3 | ×10 |
+|---|---|---|---|
+| 5,0 m | 1,34 | 1,14 | 1,00 |
+| 6,0 m | 1,10 | 0,92 | 0,79 |
+| 7,0 m | 0,94 | 0,78 | 0,66 |
+
+Con 7,0 m la corrida llega al borde de las zapatas de D3 y D6, o sea que queda como una corrida de lindero continua. Con ancho de 1,2 m la mejora es pequeña (0,84 contra 1,00 con restricción ×10, a 5,0 m de largo).
+
+### Lectura
+1. **Con el foso adosado, la ventaja de la corrida angosta se reduce mucho.** Sigue siendo mejor que la zapata original (2,00 / 1,58 / 1,18), pero queda en el mismo orden que B y A2 en presión.
+2. **Lo que mantiene su ventaja es el momento de excentricidad.** M_exc ≈ 265 kN·m contra 400–810 en B y A2, así que depende bastante menos de la restricción al giro, que es la incógnita dominante.
+3. **La grava blanda descarga el tramo profundo.** Aunque la columna está sobre él, toma solo 26 a 37 % de la carga, y el resto lo toman los tramos someros de arcilla. Por eso importa mucho la rigidez de la grava y la ubicación del foso respecto a la columna.
+4. **Para cumplir q_adm con restricción ×1** la corrida tendría que alargarse a unos 7 m, hasta unirse con D3 y D6.
+5. **La excavación en grava suelta junto al lindero sigue siendo el riesgo constructivo.**
+
+Limitaciones: la posición y las dimensiones del foso son supuestas. No se modelan la unión del escalón, la interacción de los muros y la placa del foso con la corrida, ni el apoyo lateral. Las vecinas siguen en su presión original porque dependen de cargas que no tengo.
+
 ## Hallazgo previo: calibración del caso base
 
 Con mi carga supuesta (6 000 kN, P_D5 ≈ 876 kN) el caso base no pasa: la presión máxima llega a 2,1 × q_adm. En este modelo, las zapatas excéntricas de lindero alcanzan q_adm con **P_D5 ≈ 406 kN (≈ 41 t)**. Con restricción rotacional total serían ≈ 107 t (33 t/m² × 3,24 m²).
@@ -120,4 +165,5 @@ PYTHONPATH=. python3 test_modelo.py
 PYTHONPATH=. python3 modelo_parrilla.py     # carga calibrada -> resultados.json
 PYTHONPATH=. python3 generar_informe.py     # comparacion.png
 PYTHONPATH=. python3 correr_85t.py          # P_D5 = 85 t -> resultados_85t.json, comparacion_85t.png
+PYTHONPATH=. python3 correr_corrida_foso.py # corrida angosta con foso adosado -> resultados_corrida_foso.json
 ```

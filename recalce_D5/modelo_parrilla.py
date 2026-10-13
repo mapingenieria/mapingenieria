@@ -115,6 +115,11 @@ def beam_k(L, EI, GJ, along_x):
     return K
 
 
+def patches(f):
+    """Una zapata puede ser un dict o una lista de parches (p.ej. zapata escalonada)."""
+    return f if isinstance(f, list) else [f]
+
+
 def x_range(node, f):
     x, _ = node_xy(node)
     sgn = +1 if node[0] == "A" else -1
@@ -171,10 +176,11 @@ def solve(footings, beam_over=None, loads=None, contacts=None):
     for nm, f in footings.items():
         if f is None:
             continue
-        kf, g = footing_k(nm, f, (contacts or {}).get(nm))
         i0 = nodes[nm] * 3
-        K[i0:i0 + 3, i0:i0 + 3] += kf
-        geo[nm] = g
+        for i, pt in enumerate(patches(f)):
+            kf, g = footing_k(nm, pt, (contacts or {}).get((nm, i)))
+            K[i0:i0 + 3, i0:i0 + 3] += kf
+            geo.setdefault(nm, []).append(g)
     if SUPER_SPRING:
         ksup = SUPER_MULT * 4 * EC * (COL_T**3 * 1.00 / 12) * EI_FACTOR / H_STORY
         for nm in P:
@@ -193,22 +199,23 @@ def solve_nt(footings, beam_over=None, loads=None, iters=60):
         for nm, f in footings.items():
             if f is None:
                 continue
-            cx, cy, dx, dy, kv, bx = res["geo"][nm]
             w, a, b = u[nodes[nm] * 3: nodes[nm] * 3 + 3]
-            wc = w + a * dx + b * dy
-            x1, x2 = contacts.get(nm) or x_range(nm, f)
-            if abs(a) < 1e-12:
-                continue
-            x0 = cx - wc / a                       # p = ks*(wc + a(x-cx)) = 0
-            p1, p2 = wc + a * (x1 - cx), wc + a * (x2 - cx)
-            new = [x1, x2]
-            if p1 < -1e-9:
-                new[0] = min(max(x0, x1), x2 - 0.05)
-            if p2 < -1e-9:
-                new[1] = max(min(x0, x2), x1 + 0.05)
-            if abs(new[0] - x1) > 1e-4 or abs(new[1] - x2) > 1e-4:
-                contacts[nm] = tuple(new)
-                changed = True
+            for i, pt in enumerate(patches(f)):
+                cx, cy, dx, dy, kv, bx = res["geo"][nm][i]
+                wc = w + a * dx + b * dy
+                x1, x2 = contacts.get((nm, i)) or x_range(nm, pt)
+                if abs(a) < 1e-12:
+                    continue
+                x0 = cx - wc / a                   # p = ks*(wc + a(x-cx)) = 0
+                p1, p2 = wc + a * (x1 - cx), wc + a * (x2 - cx)
+                new = [x1, x2]
+                if p1 < -1e-9:
+                    new[0] = min(max(x0, x1), x2 - 0.05)
+                if p2 < -1e-9:
+                    new[1] = max(min(x0, x2), x1 + 0.05)
+                if abs(new[0] - x1) > 1e-4 or abs(new[1] - x2) > 1e-4:
+                    contacts[(nm, i)] = tuple(new)
+                    changed = True
         if not changed:
             break
     res["contacts"] = contacts
@@ -221,16 +228,23 @@ def post(res):
     for nm, f in res["footings"].items():
         if f is None:
             continue
-        cx, cy, dx, dy, kv, bx = res["geo"][nm]
         w, a, b = u[nodes[nm] * 3: nodes[nm] * 3 + 3]
-        wc = w + a * dx + b * dy
-        R = kv * wc
-        pmax = f["ks"] * (wc + abs(a) * bx / 2 + abs(b) * f["By"] / 2)
-        pmin = f["ks"] * (wc - abs(a) * bx / 2 - abs(b) * f["By"] / 2)
-        out["footings"][nm] = dict(R=R, R_over_P=R / res["P"].get(nm, np.nan),
-                                   settle_mm=wc * 1000, p_avg=R / (f["Bx"] * f["By"]),
-                                   p_max=pmax, p_min=pmin, e_x=dx, Bx=f["Bx"], By=f["By"],
-                                   contact_frac=bx / f["Bx"])
+        pts = []
+        for i, pt in enumerate(patches(f)):
+            cx, cy, dx, dy, kv, bx = res["geo"][nm][i]
+            wc = w + a * dx + b * dy
+            pts.append(dict(R=kv * wc, dx=dx, bx=bx, By=pt["By"], Bx=pt["Bx"], ks=pt["ks"], wc=wc,
+                            p_max=pt["ks"] * (wc + abs(a) * bx / 2 + abs(b) * pt["By"] / 2),
+                            p_min=pt["ks"] * (wc - abs(a) * bx / 2 - abs(b) * pt["By"] / 2)))
+        R = sum(p["R"] for p in pts)
+        area = sum(p["Bx"] * p["By"] for p in pts)
+        out["footings"][nm] = dict(
+            R=R, R_over_P=R / res["P"].get(nm, np.nan),
+            settle_mm=sum(p["wc"] * p["R"] for p in pts) / R * 1000,
+            p_avg=R / area, p_max=max(p["p_max"] for p in pts), p_min=min(p["p_min"] for p in pts),
+            e_x=sum(p["R"] * p["dx"] for p in pts) / R, Bx=max(p["Bx"] for p in pts),
+            By=sum(p["By"] for p in pts),
+            contact_frac=sum(p["bx"] * p["By"] for p in pts) / area, patches=pts)
     for ni, nj, (b, h), lab in res["beams"]:
         xi, yi = node_xy(ni)
         xj, yj = node_xy(nj)
