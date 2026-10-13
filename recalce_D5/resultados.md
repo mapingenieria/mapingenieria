@@ -23,6 +23,39 @@
 - Suelo de arcilla: ks = 60 000 kN/m³ (de E = 10 000 t/m², ν = 0,35, B = 1,8 m) y q_adm = 323,65 kPa (estudio de suelos).
 - Pruebas: voladizo, torsión, zapata centrada y equilibrio de reacciones (`test_modelo.py`).
 
+## Actualización: Z1 = 2,0 × 2,0 m y foso según la planta de segundo nivel
+
+**Esta sección reemplaza a las posteriores donde haya diferencias.** Las corridas anteriores usaron Z1 de 1,8 × 1,8 m y el foso con su lado de 1,70 m hacia el interior; ambos supuestos estaban mal. Script: `correr_foso_real.py`; esquema: `esquema_supuestos.png`.
+
+**Lectura de la planta de segundo nivel:** el hueco del ascensor (recuadro con X, 2,46–2,56 × 1,70 m, casi igual al pozo de 1,70 × 2,50 m del proveedor) queda pegado al lindero D, justo al sur de D5. Se extiende 2,50 m hacia el interior y 1,70 m a lo largo del lindero. Con muros de 0,20 m la huella exterior es 2,90 × 2,10 m. **Falta confirmar y0:** la distancia entre el eje de D5 y el borde norte del foso. Barrí 0,0 / 0,5 / 1,0 m.
+
+Con Z1 de 2,0 m, la excentricidad respecto a la columna es 0,85 m. P_D5 = 85 t.
+
+### Presión máxima bajo D5 / q_adm (restricción ×1 / ×3 / ×10), y0 = 0,5 m
+
+| Alternativa | ×1 | ×3 | ×10 | Vecinas ×1 |
+|---|---|---|---|---|
+| V0, Z1 2 × 2 original | 1,85 | 1,47 | 1,07 | 1,85 |
+| R, recorte y prolongación al norte (2,0 × 2,0) | 2,39 | 1,96 | 1,57 | 1,84 |
+| Rc, solo recorte | 2,52 | 2,04 | 1,59 | 1,84 |
+| S, corrida 0,9 m hacia el norte | 2,48 | 2,26 | 2,11 | 1,82 |
+| A, zapata 2 × 2 profunda en grava | 431 kPa | 343 kPa | 265 kPa | 2,07 |
+| A2, zapata recortada + cajón del foso | 1,91 | 1,54 | 1,17 | 1,91 |
+
+La zapata en grava (A) no tiene q_adm de referencia. Sube las vecinas hasta 2,07 / 1,62 / 1,19 veces q_adm.
+
+Sensibilidad a y0:
+- **y0 = 0,0:** R sube a 2,84 / 2,36 / 1,96, Rc a 3,30 / 2,68 / 2,15, S a 2,96 / 2,70 / 2,53. A2 se mantiene en 1,89 / 1,53 / 1,16.
+- **y0 = 1,0:** no hay interferencia en planta. R y Rc dan lo mismo que V0 (1,85 / 1,48 / 1,11), S queda en 2,02 / 1,83 / 1,70 y A2 en 1,91 / 1,54 / 1,17.
+
+### Lectura
+1. **Con Z1 de 2 × 2 m el problema es menor,** pero V0 sigue por encima de q_adm: 1,85 con restricción ×1, 1,47 con ×3 y 1,07 con ×10. La restricción al giro sigue siendo la incógnita dominante.
+2. **La interferencia en planta es parcial:** solo entre 0 y 1,0 m del borde sur de la zapata (según y0).
+3. **Recortar y desplazar la zapata hacia el norte empeora.** Saca el centroide del eje de la columna: la columna queda en el borde sur y aumenta la excentricidad en y, con torsión en la viga de lindero. La corrida angosta hacia el norte falla por lo mismo. **La zapata debe quedar centrada bajo la columna.**
+4. **A2 (zapata recortada + cajón del foso integrado)** rinde como la original, sin importar y0 (1,89–1,91 con ×1). Compensa el recorte y evita bajar a la grava, siempre que la base del cajón quede en arcilla; eso depende de la cota del sótano.
+5. **A (profunda en grava)** carga más a las vecinas (+12 %) y depende de datos de la grava que no existen.
+6. **Pendiente:** y0, la cota del sótano, el cuadro de elementos de las vigas y la restricción al giro real.
+
 ## Actualización con P_D5 = 85 t (carga medida)
 
 Se toma 85 t ≈ 834 kN como carga **de servicio**. Si es mayorada, hay que reescalar. Las vecinas se cargan con el mismo reparto tributario (supuesto), así que también están cerca de 80 t. Script: `correr_85t.py`; figura: `comparacion_85t.png`.
@@ -165,5 +198,6 @@ PYTHONPATH=. python3 test_modelo.py
 PYTHONPATH=. python3 modelo_parrilla.py     # carga calibrada -> resultados.json
 PYTHONPATH=. python3 generar_informe.py     # comparacion.png
 PYTHONPATH=. python3 correr_85t.py          # P_D5 = 85 t -> resultados_85t.json, comparacion_85t.png
-PYTHONPATH=. python3 correr_corrida_foso.py # corrida angosta con foso adosado -> resultados_corrida_foso.json
+PYTHONPATH=. python3 correr_corrida_foso.py # corrida angosta con foso adosado (supuestos antiguos) -> resultados_corrida_foso.json
+PYTHONPATH=. python3 correr_foso_real.py    # Z1 2x2 y foso segun planta de 2.o nivel -> resultados_foso_real.json
 ```
