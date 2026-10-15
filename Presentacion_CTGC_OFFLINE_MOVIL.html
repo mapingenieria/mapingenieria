@@ -5,7 +5,7 @@
   <script>document.documentElement.classList.add("js")</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="copyright" content="© MAP Ingeniería, Construcciones y Servicios. Todos los derechos reservados.">
+  <meta name="copyright" content="© FUDOC (Fundación de Termotasajero). Todos los derechos reservados.">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <meta name="theme-color" content="#061f1d">
   <title>CTGC · Presentación móvil</title>
@@ -381,7 +381,7 @@ img{-webkit-user-drag:none;user-drag:none}
 .ip-toast.show{transform:translate(-50%,0)}
 .ip-toast b{display:block;margin-bottom:3px;color:var(--lime);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
 .toc-legal{margin:12px 2px 0;padding-top:10px;border-top:1px solid rgba(255,255,255,.15);color:#a9c0bb;font-size:10.5px;line-height:1.45}
-@media print{.deck,.toc,.lightbox,.scroll-hint,.mobile-nav,.chrome{display:none!important}html,body{height:auto;overflow:visible;background:white}body:before{content:"Documento protegido · Propiedad intelectual de MAP Ingeniería, Construcciones y Servicios. Uso exclusivo para la visita de obra. Se prohíbe su impresión, copia, reproducción o distribución sin autorización escrita.";display:block;padding:40px;font:600 18px/1.5 Georgia,serif;color:#082f2b}}
+@media print{.deck,.toc,.lightbox,.scroll-hint,.mobile-nav,.chrome{display:none!important}html,body{height:auto;overflow:visible;background:white}body:before{content:"Documento protegido · Propiedad intelectual de FUDOC (Fundación de Termotasajero). Uso exclusivo para la visita de obra. Se prohíbe su impresión, copia, reproducción o distribución sin autorización escrita.";display:block;padding:40px;font:600 18px/1.5 Georgia,serif;color:#082f2b}}
 </style>
 </head>
 <body>
@@ -738,9 +738,9 @@ updateHint();
 
 /* Aviso de propiedad intelectual */
 (function(){
-  const MSG='Documento protegido. Propiedad intelectual de MAP Ingeniería, Construcciones y Servicios. Uso exclusivo para la visita de obra: se prohíbe copiar, reproducir, imprimir o distribuir su contenido sin autorización escrita.';
+  const MSG='Documento protegido. Propiedad intelectual de FUDOC (Fundación de Termotasajero). Uso exclusivo para la visita de obra: se prohíbe copiar, reproducir, imprimir o distribuir su contenido sin autorización escrita.';
   const toast=document.createElement('div');toast.className='ip-toast';toast.setAttribute('role','alert');
-  toast.innerHTML='<b>Propiedad intelectual</b>Este contenido está protegido. Su copia, reproducción o distribución requiere autorización escrita de MAP Ingeniería.';
+  toast.innerHTML='<b>Propiedad intelectual</b>Este contenido está protegido. Su copia, reproducción o distribución requiere autorización escrita de FUDOC.';
   document.body.appendChild(toast);
   let timer;
   function warn(){toast.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>toast.classList.remove('show'),4200)}
@@ -757,7 +757,7 @@ updateHint();
 /* Índice de láminas */
 (function(){
   const toc=document.createElement('div');toc.className='toc';toc.setAttribute('role','dialog');toc.setAttribute('aria-label','Índice de láminas');
-  toc.innerHTML='<div class="toc-sheet"><div class="toc-head"><b>Índice</b><button type="button" aria-label="Cerrar índice">×</button></div><ol></ol><p class="toc-legal">© MAP Ingeniería, Construcciones y Servicios. Documento de uso exclusivo para la visita de obra; protegido por derechos de propiedad intelectual.</p></div>';
+  toc.innerHTML='<div class="toc-sheet"><div class="toc-head"><b>Índice</b><button type="button" aria-label="Cerrar índice">×</button></div><ol></ol><p class="toc-legal">© FUDOC (Fundación de Termotasajero). Documento de uso exclusivo para la visita de obra; protegido por derechos de propiedad intelectual.</p></div>';
   const ol=toc.querySelector('ol');
   slides.forEach((s,i)=>{const li=document.createElement('li');const b=document.createElement('button');b.type='button';b.innerHTML='<span>'+String(i+1).padStart(2,'0')+'</span>'+s.dataset.title;b.addEventListener('click',()=>{close();show(i)});li.appendChild(b);ol.appendChild(li)});
   document.body.appendChild(toc);
