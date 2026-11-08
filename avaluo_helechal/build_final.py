@@ -147,6 +147,28 @@ for row in sa.iter_rows():
         if c.row==1: n.font=W; n.fill=HDR
 widths(wa,[11,16,22,45,16,14,12,16,12,22,12,11,11,60,14,70]); wa.freeze_panes="A2"
 # ---------- 9 RESUMEN
+
+# ---------- 9 TOPOGRAFIA
+wp=wb.create_sheet("9_Topografia")
+wp["A1"]="TOPOGRAFÍA DEL PREDIO - PENDIENTES CALCULADAS SOBRE EL POLÍGONO CATASTRAL (SRTM 30 m)"; wp["A1"].font=Font(bold=True,size=12)
+wp["A2"]="Método: 525 elevaciones SRTM de 30 m (api.opentopodata.org) sobre el polígono del catastro IGAC; pendiente por el método de Horn (3x3); remuestreo a 5 m; clases agrológicas del IGAC. Es una estimación orientativa: confirmar con levantamiento topográfico, LiDAR o dron. Los puntos de lindero en disputa del propietario no se usan."
+hdr(wp,4,["Clase","Rango de pendiente (%)","Descripción","% del predio","Área (ha)"])
+cls=[("a","0 - 3","Plano",0.0),("b","3 - 7","Ligeramente inclinado",0.0),("c","7 - 12","Moderadamente inclinado",0.001),("d","12 - 25","Ondulado (fuertemente inclinado)",0.245),("e","25 - 50","Quebrado",0.675),("f","50 - 75","Escarpado",0.079),("g","> 75","Muy escarpado",0.0)]
+for i,(a,b,c,p) in enumerate(cls):
+    r=5+i; wp.cell(r,1,a); wp.cell(r,2,b); wp.cell(r,3,c); wp.cell(r,4,p); wp.cell(r,5,f"=D{r}*{AREA}")
+    wp.cell(r,4).number_format='0.0%'; wp.cell(r,5).number_format='0.00'
+wp.cell(12,1,"TOTAL").font=B; wp.cell(12,4,"=SUM(D5:D11)").number_format='0.0%'; wp.cell(12,5,"=SUM(E5:E11)").number_format='0.00'
+for i,(a,b) in enumerate((("Pendiente media / mediana (%)","32,5 / 32,2"),("Percentiles 10 y 90 de la pendiente (%)","20,6 / 47,2"),("Cota mínima / máxima (m s.n.m.)","842 / 998"),("Desnivel (m)","≈ 156"),("Orientación predominante de las laderas","Occidente y suroccidente (≈ 90 %)"),("Incertidumbre (error vertical 6 m, Monte Carlo, p5-p95)","12-25 %: 17-27 % | 25-50 %: 62-74 % | >50 %: 6-11 %"))):
+    wp.cell(14+i,1,a).font=B; wp.cell(14+i,2,b)
+hdr(wp,21,["Zona IGAC (física)","Área (ha)","Pendiente media (%)","12-25 %","25-50 %","> 50 %","Norma de uso"])
+for i,z in enumerate((("008",2.86,23,.76,.24,0,"Agrosilvopastoril, deportiva y turística"),("014",16.20,34,.15,.75,.10,"Recreación turística-agrosilvopastoril"),("021",0.48,29,.23,.77,0,"Agrosilvopastoril-forestal protección-producción"))):
+    r=22+i
+    for j,v in enumerate(z): wp.cell(r,1+j,v)
+    for j in (4,5,6): wp.cell(r,j).number_format='0%'
+wp["A26"]="Contraste: perfiles en Google Earth (usuario): inclinación mediana 8,2° (14 %) y 12,4° (22 %), máxima 22° (40 %) y 40,8° (86 %). Sus líneas cruzan las curvas de nivel en diagonal, por lo que subestiman la pendiente máxima. Conclusión: topografía ondulada a quebrada, sin terreno plano; valuación por franjas ondulado / quebrado / escarpado."
+wp["A27"]="La hoja 5_Terreno todavía usa franjas estimadas (4 ha planas, 6 onduladas, resto ladera); NO se han actualizado con estas áreas."
+widths(wp,[36,24,36,14,14,14,50])
+
 wr=wb.create_sheet("0_Resumen",0)
 wr["A1"]="RESUMEN DEL AVALÚO COMERCIAL - LOTE 1-1 TEQUENDAMA, HELECHAL ALTO (BORRADOR PARA AJUSTE DEL PERITO)"; wr["A1"].font=Font(bold=True,size=14)
 hdr(wr,3,["Concepto","Valor ($)"])
@@ -229,7 +251,7 @@ ws.column_dimensions["A"].width=60; ws.column_dimensions["B"].width=38; ws.colum
 ws["A22"].value="AVISO: borrador con precios PEDIDOS, factores de ajuste y áreas por franja estimados. Reemplazar las celdas rojas con datos verificados (visita técnica, certificado de tradición, uso del suelo, ofertas confirmadas) antes de firmar. El valor del terreno por comparación es muy superior al catastral y a la renta: sustentar en el informe."
 ws.merge_cells("A22:B22"); ws["A22"].font=F2(name="Calibri",size=10,bold=True,color="C00000"); ws["A22"].alignment=Alignment(wrap_text=True,vertical="top"); ws["A22"].fill=PatternFill("solid",fgColor="FCE4D6"); ws.row_dimensions[22].height=62
 ws["A24"].value="CONTENIDO DEL LIBRO (clic para ir a la hoja)"; ws["A24"].font=F2(name="Calibri",size=10,bold=True,color="FFFFFF"); ws["A24"].fill=PatternFill("solid",fgColor="2F5597"); ws["B24"].fill=PatternFill("solid",fgColor="2F5597")
-idx=[("1_Datos","Identificación del predio y datos del encargo"),("2_IGAC_Catastro","Catastro IGAC: zonas, norma de uso y valor catastral"),("3_Ofertas_reales","15 ofertas de fincas capturadas en internet"),("4_Homogeneizacion","Comparación de mercado, factores y control del CV"),("5_Terreno","Valor del terreno por franjas"),("6_Renta_contraste","Contraste por capitalización de rentas"),("7_Construcciones","Vivienda, piscina y anexos (Ross-Heideck)"),("8_Anuncios_Fincaraiz","62 anuncios de Fincaraíz clasificados")]
+idx=[("1_Datos","Identificación del predio y datos del encargo"),("2_IGAC_Catastro","Catastro IGAC: zonas, norma de uso y valor catastral"),("3_Ofertas_reales","15 ofertas de fincas capturadas en internet"),("4_Homogeneizacion","Comparación de mercado, factores y control del CV"),("5_Terreno","Valor del terreno por franjas"),("6_Renta_contraste","Contraste por capitalización de rentas"),("7_Construcciones","Vivienda, piscina y anexos (Ross-Heideck)"),("8_Anuncios_Fincaraiz","62 anuncios de Fincaraíz clasificados"),("9_Topografia","Pendientes y altitudes del predio (SRTM)")]
 for i,(n,d) in enumerate(idx):
     r=25+i; c=ws.cell(r,1,f"{n}"); c.hyperlink=f"#'{n}'!A1"; c.font=F2(name="Calibri",size=10,color="0563C1",underline="single"); ws.cell(r,2,d).font=BODY
     ws.cell(r,1).border=BR; ws.cell(r,2).border=BR; ws.cell(r,2).alignment=Alignment(wrap_text=True,vertical="center")
@@ -336,6 +358,15 @@ for r in range(2,ws.max_row+1):
     ws.row_dimensions[r].height=48
     for c in (5,7,8): ws.cell(r,c).number_format='"$" #,##0'
 ws.freeze_panes="E2"; ws.auto_filter.ref=f"A1:P{ws.max_row}"; page(ws,"1:1"); ws.sheet_properties.tabColor="7F7F7F"
+ws=wb["9_Topografia"]; ws.sheet_view.showGridLines=False
+title(ws,"A1","G",30); note(ws,"A2","G",58); hh(ws,4,32); box(ws,"A4:E12"); box(ws,"A14:B19"); hh(ws,21,32); box(ws,"A21:G24")
+for r in range(14,20): ws.cell(r,1).fill=LIGHT
+for c in range(1,6): ws.cell(12,c).fill=TOT
+for r in (8,9): 
+    for c in range(1,6): ws.cell(r,c).fill=PatternFill("solid",fgColor="FCE4D6")
+note(ws,"A26","G",58); note(ws,"A27","G",30)
+ws["B14"].alignment=Alignment(wrap_text=True,vertical="center"); ws.row_dimensions[19].height=34
+page(ws,"4:4"); ws.sheet_properties.tabColor="548235"
 wb.active=0
 
 wb.save("Avaluo_Helechal_Alto_LIBRO_CONSOLIDADO.xlsx")
