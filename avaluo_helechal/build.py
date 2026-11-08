@@ -16,8 +16,8 @@ ws=wb.active; ws.title="1_Datos"
 ws["A1"]="MEMORIA DE CÁLCULO - AVALÚO COMERCIAL RURAL (PRELIMINAR)"; ws["A1"].font=Font(bold=True,size=14)
 ws["A2"]="Celdas ROJAS = dato SUPUESTO/EJEMPLO que debe reemplazarse con la visita técnica, certificado de tradición, ficha predial y ofertas reales. Celdas AMARILLAS = parámetro técnico del perito."
 ws["A2"].alignment=Alignment(wrap_text=True); ws.merge_cells("A2:D2"); ws.row_dimensions[2].height=45
-rows=[("Predio","Finca (denominación por confirmar)"),("Vereda","Helechal Alto"),("Municipio / Departamento","Los Patios, Norte de Santander"),
-("Matrícula inmobiliaria","POR CONFIRMAR"),("Cédula catastral","POR CONFIRMAR"),("Área total (ha) - aprox. declarada",18),
+rows=[("Predio","LOTE 1-1 TEQUENDAMA"),("Vereda","Helechal Alto"),("Municipio / Departamento","Los Patios, Norte de Santander"),
+("Matrícula inmobiliaria","260-323861 (Oficina de Registro de Cúcuta - verificar certificado)"),("Código catastral","54405-00-00-0009-0020-000"),("Área total (ha) - aprox. declarada",18),
 ("Propietario / Solicitante","POR CONFIRMAR"),("Objeto del avalúo","Determinar el valor comercial"),("Fecha de visita","POR CONFIRMAR"),("Fecha del informe","2026-11-08"),
 ("Metodología","Res. IGAC 941 del 31-jul-2026 y su Anexo Técnico (comparación de mercado, renta/capitalización de ingresos como contraste, costo de reposición depreciado con Ross-Heideck)")]
 for i,(a,b) in enumerate(rows,4):
