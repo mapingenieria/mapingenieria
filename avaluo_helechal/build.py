@@ -17,8 +17,8 @@ ws["A1"]="MEMORIA DE CÁLCULO - AVALÚO COMERCIAL RURAL (PRELIMINAR)"; ws["A1"].
 ws["A2"]="Celdas ROJAS = dato SUPUESTO/EJEMPLO que debe reemplazarse con la visita técnica, certificado de tradición, ficha predial y ofertas reales. Celdas AMARILLAS = parámetro técnico del perito."
 ws["A2"].alignment=Alignment(wrap_text=True); ws.merge_cells("A2:D2"); ws.row_dimensions[2].height=45
 rows=[("Predio","LOTE 1-1 TEQUENDAMA"),("Vereda","Helechal Alto"),("Municipio / Departamento","Los Patios, Norte de Santander"),
-("Matrícula inmobiliaria","260-323861 (Oficina de Registro de Cúcuta - verificar certificado)"),("Código catastral","54405-00-00-0009-0020-000"),("Área total (ha) - aprox. declarada",18),
-("Propietario / Solicitante","POR CONFIRMAR"),("Objeto del avalúo","Determinar el valor comercial"),("Fecha de visita","POR CONFIRMAR"),("Fecha del informe","2026-11-08"),
+("Matrícula inmobiliaria","260-323861 (Oficina de Registro de Cúcuta - verificar certificado)"),("Código catastral","54405-00-00-0009-0020-000"),("Área total (ha) - catastral IGAC (195.355 m²)",19.5355),
+("Destino económico catastral / área construida","D (agropecuario) / 70 m² (verificar en campo)"),("Propietario / Solicitante","POR CONFIRMAR"),("Objeto del avalúo","Determinar el valor comercial"),("Fecha de visita","POR CONFIRMAR"),("Fecha del informe","2026-11-08"),
 ("Metodología","Res. IGAC 941 del 31-jul-2026 y su Anexo Técnico (comparación de mercado, renta/capitalización de ingresos como contraste, costo de reposición depreciado con Ross-Heideck)")]
 for i,(a,b) in enumerate(rows,4):
     ws.cell(i,1,a).font=B; c=ws.cell(i,2,b)
@@ -59,7 +59,7 @@ wm.column_dimensions["N"].width=22
 wt=wb.create_sheet("3_Terreno")
 wt["A1"]="VALORACIÓN DEL TERRENO POR FRANJAS / ÁREAS HOMOGÉNEAS DE TIERRA (AHT) - Res. 941/2026 arts. 11 y 46 num. 5"; wt["A1"].font=Font(bold=True,size=12)
 hdr(wt,3,["Zona (AHT por identificar)","Descripción","Pendiente","Área (ha)","Factor relativo vs. referencia","Valor ref. $/ha","Valor ajustado $/ha","Valor zona ($)"])
-zonas=[("Z1","Plano (vega/terraza) - potrero mejorado","0-7 %",4.0,1.20),("Z2","Ondulado - potrero","7-25 %",6.0,1.00),("Z3","Ladera fuerte - pastos/rastrojo","> 25 %",8.0,0.70)]
+zonas=[("ZF008/ZE012","IGAC: AHT 09CSd1-38; norma agrosilvopastoril-deportiva y turística; uso actual bosques; vía regular sin pavimentar","ver AHT",2.865679,2.00),("ZF014/ZE014","IGAC: AHT 10CSe1-30; norma recreación turística-agrosilvopastoril; uso actual pastos naturales; vía regular pavimentada","ver AHT",16.20642,1.00),("ZF021/ZE016","IGAC: AHT 11MSfqp-23; norma agrosilvopastoril-forestal protección-producción; uso actual bosques","ver AHT",0.463391,0.56)]
 for i,z in enumerate(zonas):
     r=4+i
     for j,v in enumerate(z): wt.cell(r,1+j,v)
@@ -69,7 +69,7 @@ for i,z in enumerate(zonas):
 wt.cell(7,1,"TOTAL").font=B; wt.cell(7,4,"=SUM(D4:D6)").font=B; wt.cell(7,8,"=SUM(H4:H6)").font=B; wt.cell(7,8).number_format=MON
 wt.cell(8,1,"Valor promedio $/ha"); wt.cell(8,8,"=H7/D7").number_format=MON
 wt.cell(9,1,"Control área vs. declarada (ha)"); wt.cell(9,4,"='1_Datos'!B9-D7")
-wt["A11"]="Z1-Z3 son franjas provisionales por pendiente. Deben reemplazarse/validarse con las AHT del IGAC (Colombia en Mapas / SIPRA-UPRA), con valor potencial y clase agrológica, y los factores calibrarse con el mercado."
+wt["A11"]="Franjas = zonas físicas/económicas que el catastro del IGAC asigna al predio (Registro 2, base pública 09-2026). Factores = relación de valores/ha catastrales (6,0 / 3,0 / 1,68 millones). El valor de referencia $/ha viene de la muestra de mercado, que hoy es FICTICIA: la columna F no es utilizable hasta reemplazarla."
 for c,w in zip("ABCDEFGH",(10,42,12,12,18,16,16,18)): wt.column_dimensions[c].width=w
 
 # ---------- 4 CONSTRUCCIONES
@@ -79,7 +79,7 @@ wc["A2"]="FD = (1 - 0,5 x (x/n + x²/n²)) x E ; E = (100 - coef. Heideck)/100 ;
 wc.merge_cells("A2:L2")
 hdr(wc,4,["Ítem","Descripción","Área / cant.","Unidad","Costo reposición nuevo $/u","Edad t (años)","Vida útil n (años)","Ross","Estado Heidecke","C Heidecke","Depreciación total (1-FD)","Valor ($)","Sustento vida útil (Tabla 2 Anexo)"])
 tab={1:0,1.5:.00032,2:.0252,2.5:.0809,3:.181,3.5:.332,4:.526,4.5:.752,5:1}
-items=[("C1","Vivienda campestre, acabados medios (1 piso)",180,"m²",2300000,12,70,2),("C2","Piscina (vaso, enchape, equipos)",32,"m²",2000000,10,50,2),
+items=[("C1","Vivienda campestre, acabados medios (1 piso) - área catastral, verificar",70,"m²",2300000,12,70,2),("C2","Piscina (vaso, enchape, equipos)",32,"m²",2000000,10,50,2),
 ("A1","Cercas de alambre de púas, postería (4 hilos)",3500,"ml",9000,8,15,2.5),("A2","Corral / brete / establo básico",1,"gl",18000000,10,50,2.5),("A3","Reservorio / tanque y conducciones de agua",1,"gl",12000000,10,50,2.5)]
 for i,it in enumerate(items):
     r=5+i
@@ -107,7 +107,7 @@ wn["A1"]="CONTRASTE: CAPITALIZACIÓN DE INGRESOS - ACTIVIDAD PECUARIA (Res. 941/
 wn["A2"]="TODOS los parámetros son SUPUESTOS a verificar en campo (aforo/capacidad de carga, precios SIPSA, costos, % participación de la tierra, tasa). Valor = Utilidad x % participación tierra / tasa de capitalización."
 wn.merge_cells("A2:L2")
 hdr(wn,4,["Zona","Área (ha)","Capacidad de carga (UGG/ha)","Ganancia (kg/UGG/año)","Precio kg en pie ($)","Ingreso $/ha/año","Costos (% ingreso)","Utilidad $/ha/año","% participación tierra","Tasa capitalización","Valor tierra $/ha","Valor zona ($)"])
-rz=[("Z1",4,1.2),("Z2",6,0.9),("Z3",8,0.4)]
+rz=[("ZF008/ZE012",4,0.4),("ZF014/ZE014",6,0.8),("ZF021/ZE016",8,0.3)]
 for i,(z,a,cc) in enumerate(rz):
     r=5+i; wn.cell(r,1,z); wn.cell(r,2,f"='3_Terreno'!D{4+i}"); wn.cell(r,3,cc); wn.cell(r,4,200); wn.cell(r,5,7800)
     wn.cell(r,6,f"=C{r}*D{r}*E{r}"); wn.cell(r,7,.60); wn.cell(r,8,f"=F{r}*(1-G{r})"); wn.cell(r,9,.40); wn.cell(r,10,.073)
@@ -122,17 +122,37 @@ wn["A12"]="Lectura: si la renta ganadera es muy inferior al mercado, el mercado 
 wn["A12"].alignment=Alignment(wrap_text=True); wn.merge_cells("A12:L12"); wn.row_dimensions[12].height=70
 for c,w in zip("ABCDEFGHIJKL",(26,10,16,16,14,16,12,16,14,14,16,18)): wn.column_dimensions[c].width=w
 
+
+# ---------- 6 IGAC
+wi=wb.create_sheet("6_Referencia_IGAC")
+wi["A1"]="REFERENCIA OFICIAL IGAC - PREDIO LO 1-1 TEQUENDAMA HELECHAL ALTO"; wi["A1"].font=Font(bold=True,size=12)
+wi["A2"]="Fuente: Base Catastral Pública del Gestor IGAC 09-2026 (Registros 1 y 2) y Zonas Homogéneas Gestor IGAC Vigencias 2026 (capas R_ZONA_HOMOGENEA_FISICA / GEOECONOMICA, vigencia de las zonas 01-01-2019). VALORES CATASTRALES, no comerciales."
+wi.merge_cells("A2:H2"); wi["A2"].alignment=Alignment(wrap_text=True); wi.row_dimensions[2].height=48
+for i,(a,b) in enumerate([("NPN (30 dígitos)","544050000000000090020000000000"),("NPN anterior (20)","54405000000090020000"),("Dirección catastral","Lo 1-1 TEQUENDAMA HELECHAL ALTO"),("Destino económico","D (agropecuario)"),("Área terreno catastral (m²)",195355),("Área construida catastral (m²)",70),("Construcción: habitaciones/pisos/tipificación/puntaje","2 / 1 / 2 / 16 (uso 1 = edificios)")],4):
+    wi.cell(i,1,a).font=B; wi.cell(i,2,b)
+hdr(wi,12,["Zona física","Zona económica","Área (m²)","Área (ha)","Valor catastral $/ha (zona geoeconómica)","Valor catastral terreno ($)","Norma de uso (capa IGAC)","Agua / vía / uso actual"])
+zz=[("008","012",28656.79,6000000,"AGROSILVOPASTORIL-DEPORTIVA Y TURISTICA","Escasas / Regular 4 sin pavimentar, vía angosta / Bosques"),("014","014",162064.2,3000000,"RECREACION TURISTICA-AGROSILVOPASTORIL","Escasas / Regular 3 pavimentada, vía angosta / Pastos naturales"),("021","016",4633.91,1680000,"AGROSILVOPASTORIL-FORESTAL PROTECCION PRODUCCION","Escasas / Regular 3 / Bosques")]
+for i,(a,b,m,v,n,o) in enumerate(zz):
+    r=13+i; wi.cell(r,1,a); wi.cell(r,2,b); wi.cell(r,3,m); wi.cell(r,4,f"=C{r}/10000"); wi.cell(r,5,v); wi.cell(r,6,f"=D{r}*E{r}"); wi.cell(r,7,n); wi.cell(r,8,o)
+    for c in (3,5,6): wi.cell(r,c).number_format=MON
+wi.cell(16,1,"TOTAL").font=B; wi.cell(16,3,"=SUM(C13:C15)").number_format=MON; wi.cell(16,4,"=SUM(D13:D15)"); wi.cell(16,6,"=SUM(F13:F15)").number_format=MON; wi.cell(16,6).font=B
+wi.cell(17,1,"Valor catastral medio $/ha"); wi.cell(17,6,"=F16/D16").number_format=MON
+wi["A19"]="Lectura: el valor catastral del terreno (vigencia 2019, sin los reajustes posteriores) es una REFERENCIA, no el valor comercial. Sirve para contrastar la muestra de mercado: cualquier valor comercial muy por encima de esta cifra requiere comparables de la misma vocación y zona que lo sustenten."
+wi["A19"].alignment=Alignment(wrap_text=True); wi.merge_cells("A19:H19"); wi.row_dimensions[19].height=55
+for c,w in zip("ABCDEFGH",(36,30,14,12,22,22,52,56)): wi.column_dimensions[c].width=w
+
 # ---------- 5 RESUMEN
 wr=wb.create_sheet("5_Resumen")
 wr["A1"]="RESUMEN DEL AVALÚO COMERCIAL (PRELIMINAR)"; wr["A1"].font=Font(bold=True,size=14)
 hdr(wr,3,["Concepto","Valor ($)"])
-data=[("Terreno (18 ha, 3 zonas)","='3_Terreno'!H7"),("Vivienda + piscina + anexos",f"={CONS}")]
+data=[("Terreno (19,54 ha, 3 zonas IGAC)","='3_Terreno'!H7"),("Vivienda + piscina + anexos",f"={CONS}")]
 for i,(a,b) in enumerate(data): wr.cell(4+i,1,a); wr.cell(4+i,2,b).number_format=MON
 wr.cell(6,1,"VALOR COMERCIAL TOTAL").font=B; wr.cell(6,2,"=SUM(B4:B5)").number_format=MON; wr.cell(6,2).font=B
 wr.cell(7,1,"Valor total ADOPTADO (redondeado a $1.000.000)").font=B; wr.cell(7,2,"=ROUND(B6,-6)").number_format=MON; wr.cell(7,2).font=B
 wr.cell(8,1,"Valor por hectárea (integral)"); wr.cell(8,2,"=B7/'1_Datos'!B9").number_format=MON
 wr.cell(9,1,"Participación terreno / construcciones"); wr.cell(9,2,'=TEXT(B4/B6,"0%")&" / "&TEXT(B5/B6,"0%")')
 wr.cell(10,1,"Contraste renta pecuaria (terreno) / comparación"); wr.cell(10,2,"='3b_Renta_contraste'!L10").number_format='0.0%'
-wr.cell(12,1,"ADVERTENCIA: cifras indicativas basadas en supuestos. No constituye avalúo definitivo hasta verificar datos en campo y reemplazar la muestra de mercado.").font=Font(bold=True,color="C00000")
+wr.cell(11,1,"Valor catastral IGAC del terreno (referencia, vigencia 2019)"); wr.cell(11,2,"='6_Referencia_IGAC'!F16").number_format=MON
+wr.cell(13,1,"ADVERTENCIA: el valor del terreno parte de una muestra de mercado FICTICIA y NO es utilizable. Referencias reales: catastral IGAC (fila 11) y renta (fila 10). No es avalúo hasta tener comparables reales.").font=Font(bold=True,color="C00000")
 wr.column_dimensions["A"].width=58; wr.column_dimensions["B"].width=26
 wb.save("/home/user/mapingenieria/avaluo_helechal/Memoria_Calculo_Avaluo_Rural_Helechal_Alto.xlsx")
