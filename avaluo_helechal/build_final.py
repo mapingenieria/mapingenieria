@@ -38,6 +38,7 @@ for i,(a,b,m,v,n,o) in enumerate(zz):
     wi.cell(r,4).number_format='0.0000'
 wi.cell(8,1,"TOTAL").font=B; wi.cell(8,3,"=SUM(C5:C7)").number_format=MON; wi.cell(8,4,"=SUM(D5:D7)").number_format='0.0000'; wi.cell(8,6,"=SUM(F5:F7)").number_format=MON; wi.cell(8,6).font=B
 wi.cell(9,1,"Valor catastral medio $/ha"); wi.cell(9,6,"=F8/D8").number_format=MON
+wi.cell(10,1,"Perímetro del polígono catastral (m)").font=B; wi.cell(10,6,2162.5).number_format='#,##0.0'
 wi["A11"]="Catastro: construcción registrada 70 m² (2 hab., 1 piso, tipificación 2, puntaje 16); no figura la piscina. Norma municipal (PBOT Los Patios, ~2000, no verificado como vigente): pecuaria = ganadería extensiva (principal); recreación y parcelación rural condicionadas; usos urbano/suburbano/industrial prohibidos."
 wi["A11"].alignment=Alignment(wrap_text=True); wi.merge_cells("A11:H11"); wi.row_dimensions[11].height=50
 widths(wi,[14,14,14,12,20,22,50,70])
@@ -124,20 +125,24 @@ hdr(wc,4,["Ítem","Descripción","Área / cant.","Unidad","Costo reposición nue
 tab=[(1,0),(1.5,.032),(2,2.52),(2.5,8.09),(3,18.10),(3.5,33.20),(4,52.60),(4.5,75.20),(5,100)]
 hdr(wc,4,["Estado","Coef. (%)"],17)
 for k,(a,b) in enumerate(tab): wc.cell(5+k,17,a); wc.cell(5+k,18,b)
-items=[("C1","Vivienda campestre, acabados medios (1 piso) - área catastral",70,"m²",2300000,12,70,2,"Área del catastro; el propietario indica vivienda con piscina: MEDIR en campo. Tabla 2: vida larga 70 (mampostería/aporticado)"),
-("C2","Piscina (vaso, enchape, equipos)",32,"m²",2000000,10,50,2,"Supuesto: 8x4 m; vida sustentada (nota 3 Tabla 2)"),
-("A1","Cercas de alambre de púas, postería (4 hilos)",3500,"ml",9000,8,15,2.5,"Supuesto; no tipificado en Tabla 2"),
+items=[("C1","Casa principal (cubierta azul), acabados medios; el catastro registra solo 70 m² en total",145,"m²",2300000,12,70,2,"Total de construcciones ≈ 300 m² (rango 285-320 m², dato aportado), repartido según la imagen aérea; piscina aparte. MEDIR en campo. Tabla 2: vida larga 70"),
+("C2","Piscina (vaso, enchape, equipos)",32,"m²",2000000,10,50,2,"Estimado de la imagen (8x4 m); vida sustentada (nota 3 Tabla 2)"),
+("C3","Bodega / galpón de cubierta metálica gris",95,"m²",900000,8,50,2.5,"Reparto según la imagen (≈ 32 % del área construida); estructura metálica liviana, Tabla 2: vida media 50"),
+("C4","Casa o anexo menor (parte baja, cubierta clara)",32,"m²",1500000,15,50,2.5,"Reparto según la imagen; confirmar uso y materiales"),
+("C5","Construcciones menores (cubiertas rojas junto a la casa)",28,"m²",1200000,12,50,2.5,"Reparto según la imagen; confirmar uso y materiales"),
+("A1","Cercas de alambre de púas, postería (4 hilos) = 85 % del perímetro catastral",None,"ml",9000,8,15,2.5,"Perímetro del polígono IGAC 2.162 m (hoja 2) x 85 % cercado (supuesto: sin cerca en quebradas/vía/lindero en disputa); sin cercas internas"),
 ("A2","Corral / brete / establo básico",1,"gl",18000000,10,50,2.5,"Supuesto; Tabla 2: vida media 50"),
-("A3","Reservorio / tanque y conducciones de agua",1,"gl",12000000,10,50,2.5,"Supuesto; Tabla 2: vida media 50")]
+("A3","Estanques / reservorios (2 visibles en la imagen) y conducciones de agua",1,"gl",12000000,10,50,2.5,"Fotointerpretación: 2 espejos de agua; supuesto de costo global")]
 for i,it in enumerate(items):
     r=5+i
     for j,v in enumerate(it[:7]): wc.cell(r,1+j,v)
+    if it[0]=="A1": wc.cell(r,3,"=ROUND('2_IGAC_Catastro'!F10*0.85,0)")
     wc.cell(r,9,it[7]); wc.cell(r,14,it[8])
     for c in (3,5,6,7,9): wc.cell(r,c).fill=RED
     wc.cell(r,8,f"=0.5*(F{r}/G{r}+(F{r}/G{r})^2)"); wc.cell(r,10,f"=VLOOKUP(I{r},$Q$5:$R$13,2,FALSE)"); wc.cell(r,11,f"=(100-J{r})/100"); wc.cell(r,12,f"=(1-H{r})*K{r}"); wc.cell(r,13,f"=C{r}*E{r}*L{r}")
     for c in (5,13): wc.cell(r,c).number_format=MON
     for c in (8,11,12): wc.cell(r,c).number_format='0.0000'
-wc.cell(10,1,"TOTAL CONSTRUCCIONES Y ANEXOS").font=B; wc.cell(10,13,"=SUM(M5:M9)").number_format=MON; wc.cell(10,13).font=B
+wc.cell(13,1,"TOTAL CONSTRUCCIONES Y ANEXOS").font=B; wc.cell(13,13,"=SUM(M5:M12)").number_format=MON; wc.cell(13,13).font=B
 widths(wc,[6,50,10,7,16,10,10,9,10,10,8,9,16,70,2,2,8,10])
 # ---------- 8 ANUNCIOS
 sa=load_workbook('versiones_previas/Estudio_Mercado_Anuncios_Fincaraiz_2026-11-08.xlsx')['Anuncios_Fincaraiz']; wa=wb.create_sheet("8_Anuncios_Fincaraiz")
@@ -172,7 +177,7 @@ widths(wp,[36,24,36,14,14,14,50])
 wr=wb.create_sheet("0_Resumen",0)
 wr["A1"]="RESUMEN DEL AVALÚO COMERCIAL - LOTE 1-1 TEQUENDAMA, HELECHAL ALTO (BORRADOR PARA AJUSTE DEL PERITO)"; wr["A1"].font=Font(bold=True,size=14)
 hdr(wr,3,["Concepto","Valor ($)"])
-data=[("Terreno (comparación de mercado, 19,54 ha)","='5_Terreno'!H8"),("Vivienda, piscina y anexos (costo depreciado)","='7_Construcciones'!M10")]
+data=[("Terreno (comparación de mercado, 19,54 ha)","='5_Terreno'!H8"),("Vivienda, piscina y anexos (costo depreciado)","='7_Construcciones'!M13")]
 for i,(a,b) in enumerate(data): wr.cell(4+i,1,a); wr.cell(4+i,2,b).number_format=MON
 wr.cell(6,1,"VALOR COMERCIAL TOTAL").font=B; wr.cell(6,2,"=B4+B5").number_format=MON; wr.cell(6,2).font=B
 wr.cell(7,1,"VALOR ADOPTADO (redondeado a $1.000.000)").font=B; wr.cell(7,2,"=ROUND(B6,-6)").number_format=MON; wr.cell(7,2).font=B; wr.cell(7,2).fill=YEL
@@ -341,13 +346,14 @@ page(ws,"4:4"); ws.sheet_properties.tabColor="7F7F7F"
 # --- 7_Construcciones
 ws=wb["7_Construcciones"]; ws.sheet_view.showGridLines=False
 for m in list(ws.merged_cells.ranges): ws.unmerge_cells(str(m))
-title(ws,"A1","N",30); note(ws,"A2","N",38); hh(ws,4,48); box(ws,"A4:N10"); box(ws,"Q4:R13")
-for r in range(5,10): ws.row_dimensions[r].height=40
-for c in range(1,15): ws.cell(10,c).fill=TOT
-ws.merge_cells("A10:L10"); ws["A10"].alignment=Alignment(horizontal="right",vertical="center"); ws["A10"].font=F2(name="Calibri",size=11,bold=True); ws.row_dimensions[10].height=24
-ws["M10"].number_format='"$" #,##0'
-for r in range(5,10):
+title(ws,"A1","N",30); note(ws,"A2","N",38); hh(ws,4,48); box(ws,"A4:N13"); box(ws,"Q4:R13")
+for r in range(5,13): ws.row_dimensions[r].height=40
+for c in range(1,15): ws.cell(13,c).fill=TOT
+ws.merge_cells("A13:L13"); ws["A13"].alignment=Alignment(horizontal="right",vertical="center"); ws["A13"].font=F2(name="Calibri",size=11,bold=True); ws.row_dimensions[13].height=24
+ws["M13"].number_format='"$" #,##0'
+for r in range(5,13):
     for c in (5,13): ws.cell(r,c).number_format='"$" #,##0'
+    ws.cell(r,3).number_format='#,##0'
 ws.column_dimensions["Q"].width=10; ws.column_dimensions["R"].width=12; ws.column_dimensions["O"].width=3; ws.column_dimensions["P"].width=3
 ws.freeze_panes="C5"; page(ws,"4:4"); ws.sheet_properties.tabColor="7F7F7F"
 # --- 8_Anuncios
