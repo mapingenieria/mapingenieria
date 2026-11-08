@@ -1,7 +1,7 @@
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter as L
-RED=PatternFill("solid",fgColor="FFC7CE"); YEL=PatternFill("solid",fgColor="FFF2CC"); HDR=PatternFill("solid",fgColor="1F4E78"); GRN=PatternFill("solid",fgColor="E2EFDA")
+RED=PatternFill("solid",fgColor="FFF2CC"); YEL=PatternFill("solid",fgColor="D9D9D9"); HDR=PatternFill("solid",fgColor="404040"); GRN=PatternFill("solid",fgColor="EDEDED")
 B=Font(bold=True); W=Font(bold=True,color="FFFFFF"); thin=Side(style="thin",color="999999"); BR=Border(left=thin,right=thin,top=thin,bottom=thin)
 MON='#,##0'
 def hdr(ws,r,vals,c0=1):
@@ -83,10 +83,10 @@ widths(wm,[28,40,10,18,12,18,20,18,16,12,10,14,12,10,18,60])
 # ---------- 5 TERRENO
 wt=wb.create_sheet("5_Terreno")
 wt["A1"]="VALOR DEL TERRENO POR FRANJAS TOPOGRÁFICAS (art. 46 num. 5 Res. 941/2026)"; wt["A1"].font=Font(bold=True,size=12)
-wt["A2"]="Áreas por franja = ESTIMACIÓN a medir en campo (suman el área catastral). Factores = criterio del perito respecto al terreno de referencia (ondulado). Ver en la hoja 2 las AHT y zonas oficiales del IGAC."
+wt["A2"]="Áreas por franja = pendientes calculadas con el modelo SRTM sobre el polígono catastral (hoja 9_Topografia; la franja escarpada es el saldo hasta el área catastral). Factores = criterio del perito respecto al terreno de referencia (ondulado); a calibrar con ofertas. Ver en la hoja 2 las AHT y zonas oficiales del IGAC."
 wt.merge_cells("A2:H2"); wt["A2"].alignment=Alignment(wrap_text=True); wt.row_dimensions[2].height=36
 hdr(wt,4,["Franja","Descripción","Pendiente","Área (ha)","Factor vs. referencia","Valor ref. $/ha","Valor ajustado $/ha","Valor franja ($)"])
-fr=[("F1","Plano - potrero","0-7 %",4.0,1.15),("F2","Ondulado - potrero","7-25 %",6.0,1.00),("F3","Ladera fuerte - pasto/rastrojo/bosque","> 25 %",None,0.70)]
+fr=[("F1","Ondulado - pastos","12-25 %",4.81,1.00),("F2","Quebrado - pastos y rastrojo","25-50 %",13.19,0.80),("F3","Escarpado - rastrojo y bosque","> 50 %",None,0.60)]
 for i,z in enumerate(fr):
     r=5+i
     for j,v in enumerate(z): wt.cell(r,1+j,v)
@@ -103,7 +103,7 @@ wn["A1"]="CONTRASTE: CAPITALIZACIÓN DE INGRESOS - ACTIVIDAD PECUARIA (arts. 46-
 wn["A2"]="Parámetros SUPUESTOS (aforo, precio, costos, participación de la tierra, tasa 7,3 % tomada del ejemplo del Anexo / Res. 1912 de 2024). Valor/ha = Utilidad x % participación tierra / tasa."
 wn.merge_cells("A2:L2"); wn["A2"].alignment=Alignment(wrap_text=True); wn.row_dimensions[2].height=32
 hdr(wn,4,["Franja","Área (ha)","Carga (UGG/ha)","Ganancia (kg/UGG/año)","Precio kg en pie ($)","Ingreso $/ha/año","Costos (% ingreso)","Utilidad $/ha/año","% participación tierra","Tasa capitalización","Valor tierra $/ha","Valor franja ($)"])
-for i,(z,cc) in enumerate((("F1",1.2),("F2",0.8),("F3",0.3))):
+for i,(z,cc) in enumerate((("F1",0.8),("F2",0.5),("F3",0.25))):
     r=5+i; wn.cell(r,1,z); wn.cell(r,2,f"='5_Terreno'!D{5+i}"); wn.cell(r,3,cc); wn.cell(r,4,200); wn.cell(r,5,7800); wn.cell(r,6,f"=C{r}*D{r}*E{r}"); wn.cell(r,7,.60); wn.cell(r,8,f"=F{r}*(1-G{r})"); wn.cell(r,9,.40); wn.cell(r,10,.073); wn.cell(r,11,f"=H{r}*I{r}/J{r}"); wn.cell(r,12,f"=B{r}*K{r}")
     for c in (3,4,5,7,9,10): wn.cell(r,c).fill=RED
     for c in (5,6,8,11,12): wn.cell(r,c).number_format=MON
@@ -166,7 +166,7 @@ for i,z in enumerate((("008",2.86,23,.76,.24,0,"Agrosilvopastoril, deportiva y t
     for j,v in enumerate(z): wp.cell(r,1+j,v)
     for j in (4,5,6): wp.cell(r,j).number_format='0%'
 wp["A26"]="Contraste: perfiles en Google Earth (usuario): inclinación mediana 8,2° (14 %) y 12,4° (22 %), máxima 22° (40 %) y 40,8° (86 %). Sus líneas cruzan las curvas de nivel en diagonal, por lo que subestiman la pendiente máxima. Conclusión: topografía ondulada a quebrada, sin terreno plano; valuación por franjas ondulado / quebrado / escarpado."
-wp["A27"]="La hoja 5_Terreno todavía usa franjas estimadas (4 ha planas, 6 onduladas, resto ladera); NO se han actualizado con estas áreas."
+wp["A27"]="La hoja 5_Terreno usa estas áreas: ondulado 4,81 ha (clases c y d), quebrado 13,19 ha y escarpado el saldo (1,54 ha), con factores 1,00 / 0,80 / 0,60 (criterio del perito)."
 widths(wp,[36,24,36,14,14,14,50])
 
 wr=wb.create_sheet("0_Resumen",0)
@@ -187,14 +187,14 @@ wr.cell(17,1,"Capitalización de renta pecuaria (supuestos)"); wr.cell(17,2,"='6
 wr.cell(18,1,"Terreno por comparación (adoptado)"); wr.cell(18,2,"=B4").number_format=MON
 wr.cell(19,1,"CV de la muestra de mercado (%) / límite 10 %"); wr.cell(19,2,f"='4_Homogeneizacion'!B{l+5}").number_format='0.0'
 wr.cell(20,1,"Control estadístico"); wr.cell(20,2,f"='4_Homogeneizacion'!B{l+7}")
-wr.cell(22,1,"AVISO: borrador con precios PEDIDOS, factores de ajuste y áreas por franja estimados. Reemplazar las celdas rojas con datos verificados (visita técnica, certificado de tradición, uso del suelo, ofertas confirmadas) antes de firmar. El valor del terreno por comparación es muy superior al catastral y a la renta: sustentar en el informe.").font=Font(bold=True,color="C00000")
+wr.cell(22,1,"AVISO: borrador con precios PEDIDOS, factores de ajuste y áreas por franja estimados. Reemplazar las celdas rojas con datos verificados (visita técnica, certificado de tradición, uso del suelo, ofertas confirmadas) antes de firmar. El valor del terreno por comparación es muy superior al catastral y a la renta: sustentar en el informe.").font=Font(bold=True,color="000000")
 wr["A22"].alignment=Alignment(wrap_text=True); wr.merge_cells("A22:B22"); wr.row_dimensions[22].height=75
 widths(wr,[64,34])
 
 # ================= PRESENTACIÓN =================
 from openpyxl.worksheet.properties import PageSetupProperties
 from openpyxl.styles import Font as F2
-NAVY="1F3864"; LIGHT=PatternFill("solid",fgColor="DDEBF7"); GREY=PatternFill("solid",fgColor="F2F2F2"); TOT=PatternFill("solid",fgColor="FFF2CC")
+NAVY="262626"; LIGHT=PatternFill("solid",fgColor="EDEDED"); GREY=PatternFill("solid",fgColor="F2F2F2"); TOT=PatternFill("solid",fgColor="D9D9D9")
 BODY=F2(name="Calibri",size=10)
 def box(ws,rng):
     for row in ws[rng]:
@@ -241,24 +241,24 @@ for r in (4,5,8,12,13,16,17,18):
     ws.cell(r,2).number_format='"$" #,##0'
 for r in (6,7):
     for c in (1,2): ws.cell(r,c).font=F2(name="Calibri",size=11,bold=True); ws.cell(r,c).fill=LIGHT
-ws.cell(7,2).number_format='"$" #,##0'; ws.cell(6,2).number_format='"$" #,##0'; ws.cell(7,1).fill=TOT; ws.cell(7,2).fill=TOT; ws.cell(7,2).font=F2(name="Calibri",size=12,bold=True,color="C00000")
+ws.cell(7,2).number_format='"$" #,##0'; ws.cell(6,2).number_format='"$" #,##0'; ws.cell(7,1).fill=TOT; ws.cell(7,2).fill=TOT; ws.cell(7,2).font=F2(name="Calibri",size=12,bold=True,color="000000")
 for r in (11,15):
-    ws.cell(r,1).font=F2(name="Calibri",size=10,bold=True,color="FFFFFF"); ws.cell(r,1).fill=PatternFill("solid",fgColor="2F5597"); ws.cell(r,2).fill=PatternFill("solid",fgColor="2F5597")
+    ws.cell(r,1).font=F2(name="Calibri",size=10,bold=True,color="FFFFFF"); ws.cell(r,1).fill=PatternFill("solid",fgColor="595959"); ws.cell(r,2).fill=PatternFill("solid",fgColor="595959")
 ws.cell(19,2).number_format='0.0" %"'; ws.cell(19,2).alignment=Alignment(horizontal="right",vertical="center")
 ws.cell(20,2).alignment=Alignment(wrap_text=True,vertical="center"); ws.row_dimensions[20].height=44
 ws.cell(9,2).alignment=Alignment(horizontal="right",vertical="center")
 ws.column_dimensions["A"].width=60; ws.column_dimensions["B"].width=38; ws.column_dimensions["C"].width=4; ws.column_dimensions["D"].width=4
 ws["A22"].value="AVISO: borrador con precios PEDIDOS, factores de ajuste y áreas por franja estimados. Reemplazar las celdas rojas con datos verificados (visita técnica, certificado de tradición, uso del suelo, ofertas confirmadas) antes de firmar. El valor del terreno por comparación es muy superior al catastral y a la renta: sustentar en el informe."
-ws.merge_cells("A22:B22"); ws["A22"].font=F2(name="Calibri",size=10,bold=True,color="C00000"); ws["A22"].alignment=Alignment(wrap_text=True,vertical="top"); ws["A22"].fill=PatternFill("solid",fgColor="FCE4D6"); ws.row_dimensions[22].height=62
-ws["A24"].value="CONTENIDO DEL LIBRO (clic para ir a la hoja)"; ws["A24"].font=F2(name="Calibri",size=10,bold=True,color="FFFFFF"); ws["A24"].fill=PatternFill("solid",fgColor="2F5597"); ws["B24"].fill=PatternFill("solid",fgColor="2F5597")
+ws.merge_cells("A22:B22"); ws["A22"].font=F2(name="Calibri",size=10,bold=True,color="000000"); ws["A22"].alignment=Alignment(wrap_text=True,vertical="top"); ws["A22"].fill=PatternFill("solid",fgColor="F2F2F2"); ws.row_dimensions[22].height=62
+ws["A24"].value="CONTENIDO DEL LIBRO (clic para ir a la hoja)"; ws["A24"].font=F2(name="Calibri",size=10,bold=True,color="FFFFFF"); ws["A24"].fill=PatternFill("solid",fgColor="595959"); ws["B24"].fill=PatternFill("solid",fgColor="595959")
 idx=[("1_Datos","Identificación del predio y datos del encargo"),("2_IGAC_Catastro","Catastro IGAC: zonas, norma de uso y valor catastral"),("3_Ofertas_reales","15 ofertas de fincas capturadas en internet"),("4_Homogeneizacion","Comparación de mercado, factores y control del CV"),("5_Terreno","Valor del terreno por franjas"),("6_Renta_contraste","Contraste por capitalización de rentas"),("7_Construcciones","Vivienda, piscina y anexos (Ross-Heideck)"),("8_Anuncios_Fincaraiz","62 anuncios de Fincaraíz clasificados"),("9_Topografia","Pendientes y altitudes del predio (SRTM)")]
 for i,(n,d) in enumerate(idx):
-    r=25+i; c=ws.cell(r,1,f"{n}"); c.hyperlink=f"#'{n}'!A1"; c.font=F2(name="Calibri",size=10,color="0563C1",underline="single"); ws.cell(r,2,d).font=BODY
+    r=25+i; c=ws.cell(r,1,f"{n}"); c.hyperlink=f"#'{n}'!A1"; c.font=F2(name="Calibri",size=10,color="000000",underline="single"); ws.cell(r,2,d).font=BODY
     ws.cell(r,1).border=BR; ws.cell(r,2).border=BR; ws.cell(r,2).alignment=Alignment(wrap_text=True,vertical="center")
 ws.cell(34,1,"Leyenda de colores").font=F2(name="Calibri",size=10,bold=True)
 for i,(fill,t) in enumerate(((RED,"Supuesto / criterio del perito: revisar y ajustar"),(YEL,"Parámetro técnico o valor adoptado"),(GRN,"Dato oficial verificado (catastro IGAC)"))):
     ws.cell(35+i,1,t).fill=fill; ws.cell(35+i,1).border=BR; ws.cell(35+i,1).font=BODY
-page(ws,landscape=False); ws.sheet_properties.tabColor="C00000"
+page(ws,landscape=False); ws.sheet_properties.tabColor="7F7F7F"
 # --- 1_Datos
 ws=wb["1_Datos"]; ws.sheet_view.showGridLines=False
 ws["A1"].value="DATOS DEL PREDIO Y DEL ENCARGO"; title(ws,"A1","C",30)
@@ -270,7 +270,7 @@ for r in range(4,19): ws.cell(r,1).fill=LIGHT
 ws.column_dimensions["A"].width=42; ws.column_dimensions["B"].width=84; ws.column_dimensions["C"].width=3
 for r in range(4,19): ws.row_dimensions[r].height=20
 ws["B9"].number_format='0.0000" ha"'; ws["B9"].alignment=Alignment(horizontal="left",vertical="center"); ws["B10"].alignment=Alignment(horizontal="left",vertical="center")
-page(ws,landscape=False); ws.sheet_properties.tabColor="2F5597"
+page(ws,landscape=False); ws.sheet_properties.tabColor="7F7F7F"
 # --- 2_IGAC
 ws=wb["2_IGAC_Catastro"]; ws.sheet_view.showGridLines=False
 title(ws,"A1","H",30); 
@@ -284,7 +284,7 @@ for c in (1,3,4,6): ws.cell(8,c).fill=TOT
 ws["A9"].font=F2(name="Calibri",size=10,bold=True)
 for r in (5,6,7): ws.row_dimensions[r].height=34
 ws.column_dimensions["G"].width=46; ws.column_dimensions["H"].width=62
-page(ws,"4:4"); ws.sheet_properties.tabColor="548235"
+page(ws,"4:4"); ws.sheet_properties.tabColor="7F7F7F"
 # --- 3_Ofertas
 ws=wb["3_Ofertas_reales"]
 last=ws.max_row-2
@@ -293,10 +293,10 @@ for c in ws[1]: c.font=W; c.fill=HDR; c.alignment=Alignment(wrap_text=True,horiz
 for r in range(2,last+1):
     ws.row_dimensions[r].height=78
     comp=str(ws.cell(r,14).value or "")
-    ws.cell(r,14).fill=PatternFill("solid",fgColor="C6EFCE" if comp.startswith(("MEDIA","POSIBLE")) else ("FFEB9C" if comp.startswith("BAJA") else "FFC7CE"))
+    ws.cell(r,14).fill=PatternFill("solid",fgColor="EDEDED" if comp.startswith(("MEDIA","POSIBLE")) else ("F2F2F2" if comp.startswith("BAJA") else "FFF2CC"))
     ws.cell(r,5).number_format='"$" #,##0'; ws.cell(r,6).number_format='"$" #,##0'
 note(ws,f"A{ws.max_row}","N",34)
-ws.freeze_panes="C2"; page(ws,"1:1"); ws.sheet_properties.tabColor="BF8F00"
+ws.freeze_panes="C2"; page(ws,"1:1"); ws.sheet_properties.tabColor="7F7F7F"
 # --- 4_Homog
 ws=wb["4_Homogeneizacion"]; ws.sheet_view.showGridLines=False
 for m in list(ws.merged_cells.ranges): ws.unmerge_cells(str(m))
@@ -314,7 +314,7 @@ for r in range(5,11):
     for c in (10,11,12,13,14,5): ws.cell(r,c).number_format='0.00'
 ws.column_dimensions["A"].width=40; ws.column_dimensions["B"].width=46
 for r in range(5,11): ws.cell(r,1).alignment=Alignment(horizontal="center",vertical="center")
-ws.freeze_panes="C5"; page(ws,"4:4"); ws.sheet_properties.tabColor="BF8F00"
+ws.freeze_panes="C5"; page(ws,"4:4"); ws.sheet_properties.tabColor="7F7F7F"
 # --- 5_Terreno
 ws=wb["5_Terreno"]; ws.sheet_view.showGridLines=False
 for m in list(ws.merged_cells.ranges): ws.unmerge_cells(str(m))
@@ -325,7 +325,7 @@ ws.merge_cells("A9:G9"); ws["A9"].alignment=Alignment(horizontal="right",vertica
 ws["H8"].number_format='"$" #,##0'; ws["H9"].number_format='"$" #,##0'; ws["D8"].number_format='0.00'
 for r in (5,6,7):
     for c in (6,7,8): ws.cell(r,c).number_format='"$" #,##0'
-page(ws,"4:4"); ws.sheet_properties.tabColor="548235"
+page(ws,"4:4"); ws.sheet_properties.tabColor="7F7F7F"
 # --- 6_Renta
 ws=wb["6_Renta_contraste"]; ws.sheet_view.showGridLines=False
 for m in list(ws.merged_cells.ranges): ws.unmerge_cells(str(m))
@@ -337,7 +337,7 @@ for c in range(1,13): ws.cell(8,c).fill=TOT
 for rr in (9,10):
     ws.merge_cells(f"A{rr}:K{rr}"); ws[f"A{rr}"].alignment=Alignment(horizontal="right",vertical="center"); ws[f"A{rr}"].font=F2(name="Calibri",size=10,bold=True); ws.row_dimensions[rr].height=22
 ws["L8"].number_format='"$" #,##0'; ws["L9"].number_format='"$" #,##0'; ws["B8"].number_format='0.00'; ws["L10"].number_format='0.0%'
-page(ws,"4:4"); ws.sheet_properties.tabColor="548235"
+page(ws,"4:4"); ws.sheet_properties.tabColor="7F7F7F"
 # --- 7_Construcciones
 ws=wb["7_Construcciones"]; ws.sheet_view.showGridLines=False
 for m in list(ws.merged_cells.ranges): ws.unmerge_cells(str(m))
@@ -349,7 +349,7 @@ ws["M10"].number_format='"$" #,##0'
 for r in range(5,10):
     for c in (5,13): ws.cell(r,c).number_format='"$" #,##0'
 ws.column_dimensions["Q"].width=10; ws.column_dimensions["R"].width=12; ws.column_dimensions["O"].width=3; ws.column_dimensions["P"].width=3
-ws.freeze_panes="C5"; page(ws,"4:4"); ws.sheet_properties.tabColor="548235"
+ws.freeze_panes="C5"; page(ws,"4:4"); ws.sheet_properties.tabColor="7F7F7F"
 # --- 8_Anuncios
 ws=wb["8_Anuncios_Fincaraiz"]
 hh(ws,1,48); box(ws,f"A1:P{ws.max_row}")
@@ -363,10 +363,10 @@ title(ws,"A1","G",30); note(ws,"A2","G",58); hh(ws,4,32); box(ws,"A4:E12"); box(
 for r in range(14,20): ws.cell(r,1).fill=LIGHT
 for c in range(1,6): ws.cell(12,c).fill=TOT
 for r in (8,9): 
-    for c in range(1,6): ws.cell(r,c).fill=PatternFill("solid",fgColor="FCE4D6")
+    for c in range(1,6): ws.cell(r,c).fill=PatternFill("solid",fgColor="F2F2F2")
 note(ws,"A26","G",58); note(ws,"A27","G",30)
 ws["B14"].alignment=Alignment(wrap_text=True,vertical="center"); ws.row_dimensions[19].height=34
-page(ws,"4:4"); ws.sheet_properties.tabColor="548235"
+page(ws,"4:4"); ws.sheet_properties.tabColor="7F7F7F"
 wb.active=0
 
 wb.save("Avaluo_Helechal_Alto_LIBRO_CONSOLIDADO.xlsx")
