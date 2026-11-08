@@ -2,53 +2,46 @@ from docx import Document
 from docx.shared import Pt
 d=Document(); d.styles['Normal'].font.name='Arial'; d.styles['Normal'].font.size=Pt(10)
 H=lambda t,l=1:d.add_heading(t,l); P=d.add_paragraph
-def T(rows,hdr=True):
+def BL(items):
+    for s in items: d.add_paragraph(s,style='List Bullet')
+def T(rows):
     t=d.add_table(rows=len(rows),cols=len(rows[0])); t.style='Light Grid Accent 1'
     for i,r in enumerate(rows):
         for j,v in enumerate(r): t.cell(i,j).text=str(v)
     d.add_paragraph()
 d.add_heading('INFORME DE AVALÚO COMERCIAL RURAL – MEMORIAS DE CÁLCULO',0)
-P('Predio rural, vereda Helechal Alto, municipio de Los Patios (Norte de Santander)\nFecha del informe: 8 de noviembre de 2026\nESTADO: PRELIMINAR – pendiente de visita técnica y verificación documental').runs[0].bold=True
-p=P('ADVERTENCIA: las cifras de este documento se calculan con datos supuestos o de ejemplo (marcados en rojo en el Excel anexo) porque no se contó con matrícula, ficha catastral, visita de campo ni ofertas verificadas. No constituye avalúo definitivo ni debe usarse ante terceros hasta reemplazar la muestra de mercado y firmar el perito con RAA vigente.'); p.runs[0].bold=True
+P('Predio rural, vereda Helechal Alto, municipio de Los Patios (Norte de Santander)\nFecha del informe: 8 de noviembre de 2026\nBase normativa: Resolución IGAC 941 del 31 de julio de 2026 y su Anexo Técnico\nESTADO: PRELIMINAR – pendiente de visita técnica y verificación documental').runs[0].bold=True
+P('ADVERTENCIA: las cifras se calculan con datos supuestos o de ejemplo (celdas rojas del Excel anexo) porque no se contó con certificado de tradición, ficha catastral, visita técnica ni ofertas verificadas. No constituye avalúo definitivo y no debe usarse ante terceros hasta reemplazar la muestra de mercado y ser firmado por el perito con RAA vigente.').runs[0].bold=True
 H('1. Información básica')
-T([['Solicitante','Por confirmar'],['Objeto','Determinar el valor comercial del inmueble'],['Predio','Finca, vereda Helechal Alto, Los Patios (N. de S.)'],['Área','≈ 18 ha (declarada; verificar con certificado y levantamiento)'],['Matrícula / cédula catastral','Por confirmar'],['Tipo de inmueble','Rural, uso agropecuario (ganadería en potreros) con vivienda campestre y piscina'],['Fecha de visita','Por confirmar']])
+T([['Solicitante','Por confirmar'],['Objeto','Determinar el valor comercial del inmueble'],['Tipo de inmueble / avalúo','Finca – avalúo comercial rural'],['Ubicación','Vereda Helechal Alto, Los Patios, Norte de Santander'],['Área','≈ 18 ha (declarada; verificar con certificado y levantamiento)'],['Matrícula inmobiliaria / NPN','Por confirmar'],['Fecha(s) de visita técnica','Por confirmar (obligatoria, art. 10)'],['Uso actual','Potreros (pecuario), vivienda campestre con piscina (acabados medios)']])
 H('2. Marco normativo y metodológico')
-for s in ['Ley 388 de 1997 y Decreto 1170 de 2015 (único reglamentario del sector Información Estadística), sección de avalúos IGAC.',
-'Resolución IGAC 620 de 2008: métodos de comparación o de mercado, costo de reposición, capitalización de rentas y residual; control estadístico de la muestra (CV ≤ 7,5 %).',
-'Resolución IGAC 1044 de 2014 y demás resoluciones complementarias del IGAC vigentes.',
-'Ley 1673 de 2013 y Decreto 556 de 2014 (actividad del avaluador; RAA). Normas técnicas sectoriales NTS I 01 y NTS S 01.',
-'VERIFICAR: este informe se basó en la Res. 620/2008 y sus modificaciones conocidas. No pude consultar el portal del IGAC en esta sesión; el perito debe confirmar si existe una resolución posterior que actualice la metodología y ajustar el informe.']:
-    d.add_paragraph(s,style='List Bullet')
-P('Métodos aplicados: (i) Comparación de mercado para el terreno, con homogeneización y control estadístico; (ii) Costo de reposición depreciado (Ross-Heidecke) para vivienda, piscina y anexos. Capitalización de rentas se usa solo como contraste (ver §8). Valor total = terreno + construcciones y anexos.')
-H('3. Descripción del sector y del predio')
-for s in ['Ubicación: Helechal Alto, zona rural del municipio de Los Patios, área metropolitana de Cúcuta; influencia urbana moderada que favorece demanda recreativa/campestre. (Verificar vías, distancia al casco urbano, POT/EOT, normas de uso del suelo y restricciones ambientales, rondas hídricas, amenaza por remoción en masa.)',
-'Topografía: mixta: parte plana, parte ondulada y parte de ladera fuerte (>25 %).',
-'Uso actual: potreros; vivienda con piscina, acabados medios.',
-'Servicios: por verificar (acueducto veredal/pozo, energía, vías de acceso, conectividad).']:
-    d.add_paragraph(s,style='List Bullet')
-H('4. Zonas homogéneas físicas del terreno (supuestos)')
-T([['Zona','Descripción','Pendiente','Área (ha)','Factor vs. referencia'],['Z1','Plano – potrero mejorado','0–7 %','4,0','1,20'],['Z2','Ondulado – potrero','7–25 %','6,0','1,00'],['Z3','Ladera fuerte – pastos/rastrojo','>25 %','8,0','0,70']])
-P('La distribución de áreas (4/6/8 ha) es un supuesto; debe medirse con GPS/plano. Los factores relativos se sustentan en la relación de mercado plano–ondulado–ladera y deben calibrarse con ofertas reales.')
-H('5. Investigación de mercado y homogeneización')
-P('Muestra de seis ofertas de ejemplo (a reemplazar). Del valor de oferta se descuentan las construcciones, se aplican factores de negociación, topografía, acceso, aguas/servicios y área, y se obtiene el valor homogéneo por hectárea del terreno de referencia (ondulado, acceso bueno).')
-T([['#','Área ha','$/ha bruto (terreno)','Factores aplicados','$/ha homogeneizado'],['1','15','60.000.000','0,94','56.400.000'],['2','20','55.000.000','0,92·1,10·1,03','57.329.800'],['3','8','68.750.000','0,95·0,96','62.700.000'],['4','25','50.000.000','0,90·1,12·1,03·1,05','54.507.600'],['5','10','70.000.000','0,93·0,95','61.845.000'],['6','18','54.444.444','0,92·1,05','52.593.333']])
-T([['Promedio','$57.562.622/ha'],['Desviación estándar','$4.004.105'],['Coeficiente de variación','6,96 % (≤ 7,5 %: CUMPLE)'],['Valor adoptado terreno de referencia','$57.600.000/ha']])
-H('6. Valor del terreno')
-T([['Zona','Área (ha)','$/ha ajustado','Valor ($)'],['Z1 plano','4,0','69.120.000','276.480.000'],['Z2 ondulado','6,0','57.600.000','345.600.000'],['Z3 ladera fuerte','8,0','40.320.000','322.560.000'],['TOTAL TERRENO','18,0','52.480.000 (prom.)','944.640.000']])
-H('7. Construcciones y anexos – costo de reposición depreciado')
-P('Fórmula: Valor = Cantidad × Costo nuevo × (1 – D); D = Ross + (1 – Ross)·C(Heidecke); Ross = 0,5·(t/n + (t/n)²).')
-T([['Ítem','Cant.','Costo nuevo','Edad/Vida','Estado','Depreciación','Valor ($)'],['Vivienda, acabados medios','180 m²','2.300.000/m²','12/70','2','12,31 %','363.045.759'],['Piscina','32 m²','2.000.000/m²','10/40','2','17,75 %','52.639.200'],['Cercas (4 hilos)','3.500 ml','9.000/ml','8/15','2,5','45,67 %','17.113.642'],['Corral/brete','1 gl','18.000.000','10/30','2,5','28,51 %','12.867.400'],['Reservorio/conducciones','1 gl','12.000.000','10/30','2,5','28,51 %','8.578.267'],['TOTAL','','','','','','454.244.267']])
-P('Áreas, edades, estado y costos son supuestos: confirmar con la visita, licencia/planos y presupuesto actualizado (p. ej., Construdata).')
-H('8. Resultado')
-T([['Concepto','Valor ($)'],['Terreno','944.640.000'],['Vivienda, piscina y anexos','454.244.267'],['VALOR COMERCIAL TOTAL (PRELIMINAR)','1.398.884.267'],['Adoptado (redondeado)','1.399.000.000'],['Valor integral por ha','≈ 77.700.000']])
-P('Contraste: el valor por hectárea de ~$52 millones para el terreno solo es coherente con la muestra; verificar frente a rentas de ganadería (capitalización) que normalmente arrojan valores menores y justifican que el mercado pague por ubicación y uso campestre.')
-H('9. Consideraciones y limitaciones')
-for s in ['Datos de mercado, áreas por zona, medidas de construcciones, edad y costos son ejemplos/supuestos hasta visita y documentos.',
-'Verificar: certificado de tradición (gravámenes, servidumbres, limitaciones, falsa tradición), uso del suelo y normativa ambiental, acceso legal, fuentes de agua, licencias de construcción y de la piscina.',
-'Vigencia: el avalúo comercial tiene vigencia de un año si las condiciones no cambian (art. 19 Decreto 422 de 2000).',
-'Respetar declaración de independencia, ausencia de conflicto de intereses y firma con número de RAA, requisitos que debe aportar el perito titular.']:
-    d.add_paragraph(s,style='List Bullet')
-H('10. Anexos requeridos para el informe definitivo')
-for s in ['Registro fotográfico, plano/levantamiento y coordenadas.','Certificado de tradición y libertad, ficha predial, certificado de uso del suelo.','Soportes de ofertas (fuente, contacto, fecha) y tablas de homogeneización.','Libro de cálculo: Memoria_Calculo_Avaluo_Rural_Helechal_Alto.xlsx (fórmulas vivas).']:
-    d.add_paragraph(s,style='List Bullet')
+BL(['Resolución IGAC 941 de 2026 (31-jul-2026): fija los métodos y condiciones de elaboración y presentación de avalúos. Deroga la Resolución 620 de 2008 y el art. 13 y los incisos 1, 2 y 3 del art. 14 de la Resolución 898 de 2014 (art. 60). Según su art. 59, los avalúos iniciados antes de su vigencia siguen la norma anterior; este avalúo se inicia después, por lo que se rige por la 941. Entró en vigencia con su publicación en el Diario Oficial (un gremio reporta el 3-sep-2026; verificar la edición).',
+'Anexo Técnico de la Res. 941/2026: método de comparación (§2.1), renta (§2.2), costo y depreciación Ross-Heideck (§2.3), avalúos en zonas rurales (§4).',
+'Decreto 1170 de 2015, arts. 2.2.2.3.19 y 2.2.2.3.20 (parámetros mínimos del avalúo, citados en el art. 11 de la 941).',
+'Ley 1673 de 2013 y Decreto 556 de 2014 (actividad del avaluador, RAA).',
+'Corrección frente a la versión anterior de este informe: se había usado la Res. 620/2008 (derogada). Ya no se cita como fundamento.'])
+P('Arts. aplicados: 10 (visita técnica), 11 (parámetros: topografía, Áreas Homogéneas de Tierra, edad, estado y vida útil de las construcciones), 14 (contenido del informe), 17-19 (método de comparación y análisis de datos), 21 (coeficiente de variación: urbanos ≤ 7,5 %, rurales ≤ 10 %), 46-47 (rurales agropecuarios: métodos de costo, comparación y renta; terreno y construcciones se valoran por separado) y 59-60 (transitoriedad y derogatoria).')
+H('3. Descripción del sector y del predio (por verificar en la visita)')
+BL(['Ubicación: Helechal Alto, zona rural de Los Patios, área metropolitana de Cúcuta; posible demanda campestre/recreativa.','Topografía: parte plana, parte ondulada y ladera fuerte.','Uso: potreros (actividad pecuaria; el art. 46 exige tener en cuenta orientación productiva, nivel tecnológico y sistema de manejo), vivienda con piscina.','Por verificar: norma de uso del suelo (agropecuario vs. suburbano/parcelación), determinantes ambientales y rondas hídricas, acceso, agua, servicios, servidumbres.'])
+H('4. Franjas del terreno y Áreas Homogéneas de Tierra (AHT)')
+P('El art. 11 exige considerar las AHT en zonas rurales y el art. 46 num. 5 permite dividir el predio en franjas. Aquí se usan tres franjas provisionales por pendiente; deben reemplazarse o validarse con las AHT del IGAC (Colombia en Mapas) y SIPRA-UPRA, con su valor potencial y clase agrológica.')
+T([['Franja','Descripción','Pendiente','Área (ha)','Factor vs. referencia'],['Z1','Plano – potrero mejorado','0–7 %','4,0','1,20'],['Z2','Ondulado – potrero','7–25 %','6,0','1,00'],['Z3','Ladera fuerte – pastos/rastrojo','> 25 %','8,0','0,70']])
+H('5. Método de comparación de mercado (arts. 17-21)')
+P('Se depura cada dato sobre el valor negociado, se separan terreno y construcciones, y se analizan los datos con factores. Ojo: el art. 17 aclara que el método no es una igualación de ofertas sino un análisis técnico de las dinámicas del mercado. Cada dato debe documentarse con ubicación, fecha de captura, tipo de dato, % de negociación justificado, fuente/contacto/URL con captura de pantalla, coordenadas, AHT y clase agrológica (Anexo §2.1). La muestra siguiente es de EJEMPLO.')
+T([['#','Área ha','$/ha bruto (terreno)','Factores','$/ha homogéneo'],['1','15','60.000.000','0,94','56.400.000'],['2','20','55.000.000','0,92·1,10·1,03','57.329.800'],['3','8','68.750.000','0,95·0,96','62.700.000'],['4','25','50.000.000','0,90·1,12·1,03·1,05','54.507.600'],['5','10','70.000.000','0,93·0,95','61.845.000'],['6','18','54.444.444','0,92·1,05','52.593.333']])
+T([['Promedio','$57.562.622/ha'],['Desviación estándar','$4.004.105'],['Coeficiente de variación','6,96 % (límite rural 10 %, art. 21: CUMPLE)'],['Valor adoptado, terreno de referencia','$57.600.000/ha']])
+H('6. Valor del terreno por comparación')
+T([['Franja','Área (ha)','$/ha ajustado','Valor ($)'],['Z1 plano','4,0','69.120.000','276.480.000'],['Z2 ondulado','6,0','57.600.000','345.600.000'],['Z3 ladera fuerte','8,0','40.320.000','322.560.000'],['TOTAL TERRENO','18,0','52.480.000 (prom.)','944.640.000']])
+H('7. Contraste por capitalización de ingresos (arts. 46-47, Anexo §4.2)')
+P('Valor/ha = Utilidad × % de participación de la tierra ÷ tasa de capitalización (Ecs. 14-17). Parámetros supuestos: carga de 1,2 / 0,9 / 0,4 UGG/ha (Z1/Z2/Z3), ganancia de 200 kg/UGG/año, precio de $7.800/kg en pie, costos 60 % del ingreso, participación de la tierra 40 % y tasa 7,3 % (la usada en el ejemplo del Anexo, que la toma de la Res. 1912/2024; verificar).')
+T([['Franja','Ingreso $/ha/año','Utilidad $/ha/año','Valor tierra $/ha','Valor zona ($)'],['Z1','1.872.000','748.800','4.103.014','16.412.055'],['Z2','1.404.000','561.600','3.077.260','18.463.562'],['Z3','624.000','249.600','1.367.671','10.941.370'],['TOTAL','','','','45.816.986']])
+P('Resultado clave: la renta ganadera equivale a ~4,9 % del valor por comparación. Esta brecha es muy grande y debe resolverse antes de firmar: (a) si hay norma de uso suburbana/campestre y transacciones reales de fincas de recreo, el mercado sustenta el valor y se deja constancia razonada de por qué la renta pecuaria no lo explica; (b) si la norma es estrictamente agropecuaria y las ofertas no son comparables en vocación, el art. 47 exige fundamentar el valor en la capacidad de generar ingresos y el valor del terreno bajaría de forma importante. Además, mi muestra de mercado es ficticia, por lo que esta conclusión es provisional.')
+H('8. Construcciones y anexos – costo de reposición depreciado')
+P('Anexo §2.3.4: FD = (1 − ½(x/n + x²/n²)) × E; E = (100 − coeficiente Heideck)/100 (Tabla 6); VA = Vn × FD. Vidas útiles de referencia según Tabla 2 (vida larga 70; vida media 50) o sustentadas (nota 3).')
+T([['Ítem','Cant.','Costo nuevo','Edad/Vida','Estado','Depreciación','Valor ($)'],['Vivienda, acabados medios','180 m²','2.300.000/m²','12/70','2','12,31 %','363.045.759'],['Piscina','32 m²','2.000.000/m²','10/50','2','14,22 %','54.900.736'],['Cercas (4 hilos)','3.500 ml','9.000/ml','8/15','2,5','45,67 %','17.113.642'],['Corral/brete','1 gl','18.000.000','10/50','2,5','19,12 %','14.558.544'],['Reservorio/conducciones','1 gl','12.000.000','10/50','2,5','19,12 %','9.705.696'],['TOTAL','','','','','','459.324.377']])
+P('Áreas, edades, estados y costos son supuestos: confirmar con la visita, licencias y presupuesto actualizado. Al corregir con la Tabla 6, el coeficiente del estado 1,5 es 0,032 % (antes se había usado 0,32 %); no afecta este cálculo porque ningún ítem tiene estado 1,5.')
+H('9. Resultado preliminar')
+T([['Concepto','Valor ($)'],['Terreno (comparación)','944.640.000'],['Vivienda, piscina y anexos','459.324.377'],['VALOR COMERCIAL TOTAL (PRELIMINAR)','1.403.964.377'],['Adoptado (redondeado a $1.000.000)','1.404.000.000'],['Valor integral por ha','≈ 78.000.000']])
+H('10. Contenido del informe definitivo (art. 14) y pendientes')
+BL(['Datos del solicitante, marco jurídico del encargo, tipo de inmueble y de avalúo, ubicación (vereda), nombre/nomenclatura, fecha(s) de visita técnica, fecha del informe y firma del avaluador.','Número Predial Nacional, documentos soporte con fechas y fuentes.','Información jurídica: matrícula, propietario, título, y observaciones del certificado de tradición (gravámenes, limitaciones, servidumbres, etc.).','Descripción del sector: delimitación, actividades y usos, vías, servicios comunales rurales.','Estudio de mercado documentado (§2.1 del Anexo), AHT, aptitud de uso, recurso hídrico y sistema pecuario (capacidad de carga/aforo, orientación productiva, nivel tecnológico).','Entrega de la información del avalúo al Observatorio Inmobiliario Catastral del IGAC (art. 58).','Plazo de entrega de 30 días hábiles (art. 9, salvo pacto distinto) y verificar si la 941 regula la vigencia del avalúo; no la encontré en el texto leído.','Limitación del texto: la resolución se leyó por OCR de un PDF escaneado (errores posibles de transcripción); el Anexo se leyó como texto. Verificar los artículos citados contra el Diario Oficial.'])
 d.save('Informe_Avaluo_Rural_Helechal_Alto_PRELIMINAR.docx')
