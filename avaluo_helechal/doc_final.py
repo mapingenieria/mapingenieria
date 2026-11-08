@@ -4,7 +4,7 @@ from openpyxl import load_workbook
 wb=load_workbook('/tmp/recalc/Avaluo_Helechal_Alto_LIBRO_CONSOLIDADO.xlsx',data_only=True)
 f=lambda v:f"{v:,.0f}".replace(",",".")
 fm=lambda v:f"{v/1e6:,.1f}".replace(",","X").replace(".",",").replace("X",".")
-H4=wb['4_Homogeneizacion']; T5=wb['5_Terreno']; N6=wb['6_Renta_contraste']; C7=wb['7_Construcciones']; R9=wb['9_Resumen']; I2=wb['2_IGAC_Catastro']; O3=wb['3_Ofertas_reales']
+H4=wb['4_Homogeneizacion']; T5=wb['5_Terreno']; N6=wb['6_Renta_contraste']; C7=wb['7_Construcciones']; R9=wb['0_Resumen']; I2=wb['2_IGAC_Catastro']; O3=wb['3_Ofertas_reales']
 d=Document(); d.styles['Normal'].font.name='Arial'; d.styles['Normal'].font.size=Pt(10)
 H=lambda t,l=1:d.add_heading(t,l); P=d.add_paragraph
 def BL(items):
